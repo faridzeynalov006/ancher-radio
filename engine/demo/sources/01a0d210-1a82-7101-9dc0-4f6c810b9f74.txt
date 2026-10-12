@@ -1,0 +1,7 @@
+(Excerpts from the saved note, trimmed to the quoted passages for this public demo.)
+
+s to create scroll-driven animations in a declarative way. !image 1: bramus published: may 5, 2023 scroll-driven animations are a common ux pattern on the web. a scroll-driven animation is linked to the scroll position of a scroll container. this means that as you scroll up or down, the linked animation scrubs forward or backward in direct response. examples of this are effects such as parallax background images or reading indicators which move as you scroll. video 25 a reading indicator atop a document, 
+
+[…]
+
+inherit the advantages these existing apis bring. that includes the ability to have scroll-driven animations run off the main thread. yes, read that correctly: you can now have silky smooth animations, driven by scroll, running off the main thread, with just a few lines of extra code. what's not to like?! animations on the web, a small recap animations on the web with css to create an animation in css, define a set of keyframes using the @k

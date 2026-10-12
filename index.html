@@ -8,19 +8,64 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Manrope:wght@400;500;600;700&display=block" rel="stylesheet" />
   <style>
-    :root { --bg: #0f0e0c; --ink: #eeeeec; --muted: #8d8d86; --accent: #EB7514; }
+    :root { --bg: #0f0e0c; --ink: #eeeeec; --muted: #8d8d86; --line: rgba(238, 238, 236, .14); --accent: #EB7514; }
     * { box-sizing: border-box; margin: 0; }
     html, body { height: 100%; background: var(--bg); overflow: hidden; }
     #stage canvas { display: block; }
+
     .hud {
-      position: fixed; left: 28px; bottom: 24px; color: var(--muted);
-      font: 500 12px/1.6 Manrope, sans-serif; letter-spacing: 0.04em; pointer-events: none;
-      transition: opacity .4s;
+      position: fixed; left: 28px; bottom: 24px; max-width: min(560px, calc(100vw - 56px)); color: var(--muted);
+      font: 500 12px/1.6 Manrope, sans-serif; letter-spacing: 0.04em; transition: opacity .4s;
     }
     .hud b { color: var(--ink); font-weight: 600; }
-    .hud .now { font: 400 22px/1.2 "Hedvig Letters Serif", serif; color: var(--ink); margin-bottom: 8px; letter-spacing: 0; }
-    .hud .now span { color: var(--accent); }
-    body.clean .hud { opacity: 0; }
+    .hud .now { font: 400 22px/1.2 "Hedvig Letters Serif", serif; color: var(--ink); letter-spacing: 0; }
+    .hud .now .dot { color: #5b544b; transition: color .4s; }
+    body.on-air .hud .now .dot { color: var(--accent); }
+    .hud .episode { font: 400 15px/1.4 "Hedvig Letters Serif", serif; color: #c9c4ba; letter-spacing: 0; margin: 4px 0 12px; min-height: 1.4em; }
+    .hud .keys { pointer-events: none; }
+    .hud .edition { margin-top: 6px; color: #6d6a63; }
+    body.clean .hud, body.clean .caption { opacity: 0; }
+
+    .controls { display: none; gap: 6px; align-items: center; margin-bottom: 10px; }
+    body.live .controls { display: flex; }
+    .controls button {
+      font: 600 12px/1 Manrope, sans-serif; letter-spacing: .04em; color: var(--ink); background: rgba(20, 18, 15, .72);
+      border: 1px solid var(--line); border-radius: 999px; height: 32px; min-width: 32px; padding: 0 12px; cursor: pointer;
+      backdrop-filter: blur(6px); transition: border-color .2s, color .2s;
+    }
+    .controls button:hover { border-color: rgba(235, 117, 20, .7); }
+    .controls button.off { color: var(--muted); }
+    .controls .vol { color: var(--muted); padding: 0 4px; min-width: 2ch; text-align: center; }
+
+    .caption {
+      position: fixed; left: 50%; bottom: 34px; transform: translate(-50%, 8px); width: min(760px, calc(100vw - 48px));
+      text-align: center; opacity: 0; transition: opacity .35s, transform .35s; pointer-events: none;
+    }
+    .caption.show { opacity: 1; transform: translate(-50%, 0); }
+    .caption .text {
+      display: inline; font: 400 21px/1.45 Manrope, sans-serif; color: var(--ink);
+      background: rgba(12, 11, 9, .62); box-decoration-break: clone; -webkit-box-decoration-break: clone; padding: 3px 10px; border-radius: 6px;
+    }
+    .caption.quote .text { font: 400 22px/1.45 "Hedvig Letters Serif", serif; color: #f4efe6; }
+    .caption .who { margin-top: 8px; font: 600 12px/1 Manrope, sans-serif; letter-spacing: .06em; color: var(--accent); text-transform: uppercase; min-height: 12px; }
+    body.live .hud { bottom: auto; top: 26px; }
+
+    .prompt {
+      position: fixed; left: 50%; bottom: 46px; transform: translateX(-50%); padding: 12px 20px; border-radius: 999px;
+      font: 500 14px/1 Manrope, sans-serif; letter-spacing: .03em; color: var(--ink); background: rgba(20, 18, 15, .72);
+      border: 1px solid rgba(235, 117, 20, .45); opacity: 0; transition: opacity .4s; pointer-events: none;
+    }
+    .prompt.show { opacity: 1; animation: breathe 2.6s ease-in-out infinite; }
+    @keyframes breathe { 50% { border-color: rgba(235, 117, 20, .9); } }
+
+    .fps { position: fixed; right: 16px; top: 12px; color: var(--muted); font: 500 11px/1 Manrope, sans-serif; letter-spacing: .04em; }
+
+    @media (max-width: 640px) {
+      .hud { left: 16px; top: 16px; max-width: calc(100vw - 32px); }
+      .hud .keys { display: none; }
+      .caption .text, .caption.quote .text { font-size: 17px; }
+      .prompt { white-space: nowrap; font-size: 13px; }
+    }
   </style>
   <script type="importmap">
     { "imports": {
@@ -32,9 +77,20 @@
 <body>
   <div id="stage"></div>
   <div class="hud">
-    <div class="now"><span>&#9679;</span> <span id="station" style="color:inherit">Off</span></div>
-    <div>Shot <b id="shot">Hero</b> &nbsp;·&nbsp; 1–5 cameras &nbsp;·&nbsp; drag to orbit &nbsp;·&nbsp; ← → tune &nbsp;·&nbsp; space power &nbsp;·&nbsp; T sway &nbsp;·&nbsp; H hide</div>
+    <div class="now"><span class="dot">&#9679;</span> <span id="station">Off</span></div>
+    <div class="episode" id="episode"></div>
+    <div class="controls">
+      <button id="btn-power" title="Power (space)">Power</button>
+      <button id="btn-prev" title="Previous station (←)">‹</button>
+      <button id="btn-next" title="Next station (→)">›</button>
+      <button id="btn-vol-down" title="Volume down (↓)">−</button><span class="vol" id="vol">8</span><button id="btn-vol-up" title="Volume up (↑)">+</button>
+      <button id="btn-cc" title="Captions (C)">CC</button>
+    </div>
+    <div class="keys">Shot <b id="shot">Hero</b> &nbsp;·&nbsp; 1–5 cameras &nbsp;·&nbsp; A auto camera &nbsp;·&nbsp; drag to orbit &nbsp;·&nbsp; ← → tune &nbsp;·&nbsp; space power &nbsp;·&nbsp; H hide</div>
+    <div class="edition" id="edition"></div>
   </div>
+  <div class="caption" id="caption"><span class="text" id="caption-text"></span><div class="who" id="caption-who"></div></div>
+  <div class="prompt" id="prompt">Click the radio or press space to switch it on</div>
   <script type="module" src="./src/main.js"></script>
 </body>
 </html>

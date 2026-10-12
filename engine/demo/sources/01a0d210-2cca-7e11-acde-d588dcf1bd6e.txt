@@ -1,0 +1,19 @@
+(Excerpts from the saved note, trimmed to the quoted passages for this public demo.)
+
+nd how spring animations are influenced by different parameters. stiffness damping mass this visualizer is inspired by morses's work. great animations are fast fast animations improve the perceived performance. take a look at these two spinners for example, which one would load faster? they would both take the same time to load, but the one on the right gives you an 
+
+[…]
+
+oad faster? they would both take the same time to load, but the one on the right gives you an impression as if it's working very hard to load the data for you. snappy animations feel responsive and connected to user's actions. family's ios app is a perfect example of a snappy interface. the best type of easing for this purpose is ease-out. it starts fast and slows down at the end, w
+
+[…]
+
+ natural, almost like a living organism. this natural motion makes things easier to understand and is a major reason why mobile apps feel better than web apps. changes in web apps often occur instantly, which makes the experience feel artificial and unfamiliar, since nothing in world around us disappears or appears instantly. i highly suggest playing around with spring animations in your projects. below is a visualizer that can help you understand how spring animations are influenc
+
+[…]
+
+imations are performant if our animations won't run at 60 frames per second, everything else we've talked about becomes useless. the rule of thumb here is that you should try to animate with transform and opacity as they only trigger the third rendering step (composite), while padding or margin triggers all three (layout, paint, composite). the less work the browser has to do, the better the performance. if the main thread is busy, you should animate using hardware-accelerated animations like css
+
+[…]
+
+oad faster? they would both take the same time to load, but the one on the right gives you an impression as if it's working very hard to load the data for you. snappy animations feel responsive and connected to user's actions. family's ios app is a perfect example of a snappy interface. the best type of easing for this purpose is ease-out. it starts fast and slows down at the end, w

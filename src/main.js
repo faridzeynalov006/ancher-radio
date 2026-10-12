@@ -12,6 +12,9 @@ import { drawOverlay } from './overlay.js';
 import { drawOverlay2, loadOverlayAssets } from './overlay2.js';
 import { createCards } from './cards.js';
 import { STATIONS as DIAL_STATIONS, STATIONS_7, NEW_STATION } from './textures.js';
+import { MODE, QUALITY, SHOW_FPS, createAdaptiveResolution } from './quality.js';
+import { createLive } from './live.js';
+import { createUI } from './ui.js';
 
 await Promise.all([
   document.fonts.load('400 64px "Hedvig Letters Serif"'),
@@ -27,8 +30,9 @@ const symbolPaths = [...symbolSvg.matchAll(/ d="([^"]+)"/g)].map((m) => m[1]);
 const BG = new THREE.Color('#0f0e0c');
 
 // ---------- renderer ----------
-const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+// Live mode anti-aliases inside the composer (MSAA render targets) instead of the default framebuffer.
+const renderer = new THREE.WebGLRenderer({ antialias: MODE === 'film', powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, QUALITY.maxPixelRatio));
 renderer.setSize(innerWidth, innerHeight);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;
@@ -63,7 +67,7 @@ wall.position.set(0, 15, -7);
 wall.receiveShadow = true;
 scene.add(wall);
 
-const radio = buildRadio(renderer, { symbolPaths });
+const radio = buildRadio(renderer, { symbolPaths, realGlass: QUALITY.realGlass });
 scene.add(radio.group);
 
 // ---------- light ----------
@@ -71,7 +75,7 @@ const key = new THREE.SpotLight('#ffe2c2', 38, 30, 0.42, 0.85, 1.6);
 key.position.set(-5.5, 8.5, 7);
 key.target.position.set(0, 1.4, 0);
 key.castShadow = true;
-key.shadow.mapSize.set(4096, 4096);
+key.shadow.mapSize.set(QUALITY.shadowMapSize, QUALITY.shadowMapSize);
 key.shadow.bias = -0.0002;
 key.shadow.normalBias = 0.02;
 key.shadow.radius = 6;
@@ -95,7 +99,9 @@ scene.add(wash, wash.target);
 scene.add(new THREE.HemisphereLight('#3a3028', '#0d0b09', 0.2));
 
 // ---------- post ----------
-const composer = new EffectComposer(renderer);
+const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(innerWidth, innerHeight, {
+  type: THREE.HalfFloatType, samples: QUALITY.msaa,
+}));
 composer.addPass(new RenderPass(scene, camera));
 const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.3, 0.5, 1.4);
 composer.addPass(bloom);
@@ -120,6 +126,8 @@ const SHOTS = {
   3: { name: 'Knob', anchor: 'knob', offset: new THREE.Vector3(1.0, 0.25, 1.35), dof: 0.0028 },
   4: { name: 'Cloth', anchor: 'cloth', offset: new THREE.Vector3(-1.4, 0.15, 2.4), dof: 0.0018 },
   5: { name: 'Profile', anchor: 'center', offset: new THREE.Vector3(8.4, 0.9, 5.2), dof: 0 },
+  // live mode: frames a note card rising from the speaker
+  card: { name: 'Note', anchor: 'cloth', offset: new THREE.Vector3(1.15, 0.75, 4.6), look: new THREE.Vector3(0.45, 0.42, 0.8), dof: 0 },
 };
 let shot = SHOTS[1];
 const camPos = new THREE.Vector3(), camTarget = new THREE.Vector3();
@@ -127,7 +135,7 @@ const desiredPos = new THREE.Vector3(), desiredTarget = new THREE.Vector3();
 
 function frameShot(s, snap = false) {
   shot = s;
-  bokeh.enabled = s.dof > 0;
+  bokeh.enabled = QUALITY.depthOfField && s.dof > 0;
   bokeh.uniforms.aperture.value = s.dof;
   if (snap) {
     computeDesired(0);
@@ -142,20 +150,37 @@ let computeDesired = function (t) {
   if (shot.anchor !== 'center') drift.multiplyScalar(0.25);
   desiredTarget.copy(a);
   if (shot.anchor === 'center') desiredTarget.y -= 0.15;
-  desiredPos.copy(a).add(shot.offset).add(drift);
+  if (shot.look) desiredTarget.add(shot.look);
+  // pull back on narrow (portrait) screens so the whole radio stays in frame
+  const fit = Math.max(1, 0.95 / camera.aspect);
+  desiredPos.copy(a).add(shot.offset.clone().multiplyScalar(fit)).add(drift);
 }
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.enabled = false;
 let orbiting = false;
-renderer.domElement.addEventListener('pointerdown', () => {
+let pressAt = null;
+renderer.domElement.addEventListener('pointerdown', (e) => {
+  pressAt = [e.clientX, e.clientY];
   if (!orbiting) {
-    orbiting = true;
     controls.target.copy(camTarget);
     controls.enabled = true;
+  }
+});
+renderer.domElement.addEventListener('pointermove', (e) => {
+  if (!pressAt || orbiting) return;
+  if (Math.hypot(e.clientX - pressAt[0], e.clientY - pressAt[1]) > 6) {
+    orbiting = true;
+    if (live) live.autoCam = false;
     document.getElementById('shot').textContent = 'Free';
   }
+});
+renderer.domElement.addEventListener('pointerup', () => {
+  const wasClick = pressAt && !orbiting;
+  pressAt = null;
+  if (!orbiting) controls.enabled = false;
+  if (wasClick && live && !live.on) live.power(true);
 });
 
 // ---------- power and tuning ----------
@@ -165,12 +190,19 @@ let stationIndex = 1; // First 100 Users
 let needleAngle = -122, needleFrom = -122, needleTo = -122, needleT = 1, needleDur = 1.6;
 const TURNS = 2.6; // knob turns per full needle sweep
 
+// Moves the needle; returns how long the move takes (seconds).
+const needle = {
+  go(angle, dur = null) {
+    needleFrom = needleAngle; needleTo = angle; needleT = 0;
+    needleDur = dur ?? 0.9 + Math.abs(needleTo - needleFrom) / 160;
+    return needleDur;
+  },
+};
+
+// film and stills: step through the hard-coded demo stations
 function tuneTo(i) {
   stationIndex = (i + stations.length) % stations.length;
-  needleFrom = needleAngle;
-  needleTo = stations[stationIndex].angle;
-  needleT = 0;
-  needleDur = 0.9 + Math.abs(needleTo - needleFrom) / 160;
+  needle.go(stations[stationIndex].angle);
   document.getElementById('station').textContent = stations[stationIndex].name;
 }
 
@@ -178,9 +210,9 @@ function setPower(on) {
   powerTarget = on ? 1 : 0;
   if (on) {
     powerStartedAt = clock.elapsedTime;
-    setTimeout(() => tuneTo(stationIndex), 1200);
-  } else {
-    needleFrom = needleAngle; needleTo = -122; needleT = 0; needleDur = 1.6;
+    if (!live) setTimeout(() => tuneTo(stationIndex), 1200);
+  } else if (!live) {
+    needle.go(-122, 1.6);
     document.getElementById('station').textContent = 'Off';
   }
 }
@@ -188,22 +220,45 @@ function setPower(on) {
 const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 addEventListener('keydown', (e) => {
+  if (e.target.closest && e.target.closest('button, input')) return;
+  const k = e.key.toLowerCase();
   if (SHOTS[e.key]) {
     orbiting = false; controls.enabled = false;
+    if (live) live.autoCam = false;
     frameShot(SHOTS[e.key]);
+  }
+  if (k === 'h') document.body.classList.toggle('clean');
+  if (k === 't') turntable = !turntable;
+  if (live) {
+    if (e.code === 'Space') { e.preventDefault(); live.power(); }
+    if (e.key === 'ArrowRight') live.next();
+    if (e.key === 'ArrowLeft') live.prev();
+    if (e.key === 'ArrowUp') { e.preventDefault(); live.volume(0.1); }
+    if (e.key === 'ArrowDown') { e.preventDefault(); live.volume(-0.1); }
+    if (k === 'c') ui.captionsToggled(live.toggleCaptions());
+    if (k === 'a') { orbiting = false; controls.enabled = false; live.autoCam = true; }
+    return;
   }
   if (e.code === 'Space') { e.preventDefault(); setPower(powerTarget < 0.5); }
   if (e.key === 'ArrowRight' && powerTarget) tuneTo(stationIndex + 1);
   if (e.key === 'ArrowLeft' && powerTarget) tuneTo(stationIndex - 1);
-  if (e.key === 'h' || e.key === 'H') document.body.classList.toggle('clean');
-  if (e.key === 't' || e.key === 'T') turntable = !turntable;
 });
 
 // ---------- loop ----------
 const clock = new THREE.Clock();
 let turntable = true;
 frameShot(SHOTS[1], true);
-setTimeout(() => setPower(true), 1400);
+
+// Live mode plays tonight's edition; it waits for you to switch it on (browsers need a click for sound).
+const ui = createUI();
+const live = MODE === 'live' ? createLive({ radio, needle, setPower, frameShot, SHOTS, ui }) : null;
+if (live) {
+  ui.bind({ power: () => live.power(), next: () => live.next(), prev: () => live.prev(), captions: () => ui.captionsToggled(live.toggleCaptions()), volume: (d) => live.volume(d) });
+  live.load();
+  window.__live = live; // for debugging in the console
+} else {
+  setTimeout(() => setPower(true), 1400);
+}
 
 function tick() {
   const dt = Math.min(clock.getDelta(), 0.05);
@@ -217,9 +272,11 @@ function tick() {
   power += Math.sign(powerTarget - power) * Math.min(Math.abs(powerTarget - power), dt * rate);
   const warming = powerTarget === 1 && power < 0.98;
   const wobble = warming ? (Math.sin(t * 23) * 0.5 + Math.sin(t * 37) * 0.5) * 0.06 * (1 - power) : 0;
+  const level = live ? live.update(dt, t) : 0;
   const glow = Math.max(0, THREE.MathUtils.smoothstep(power, 0, 1) + wobble);
   radio.mats.dial.emissiveIntensity = glow * 0.8;
-  radio.mats.lamp.emissiveIntensity = glow * 6;
+  // the pilot lamp breathes with the voice; the dial stays steady
+  radio.mats.lamp.emissiveIntensity = glow * (6 + level * 2.5);
   radio.mats.needle.emissiveIntensity = 0.15 + glow * 0.5;
   radio.mats.indexLine.emissiveIntensity = 0.2 + glow * 0.6;
   radio.glowLight.intensity = glow * 0.35;
@@ -245,8 +302,14 @@ function tick() {
   if (bokeh.enabled) bokeh.uniforms.focus.value = camera.position.distanceTo(orbiting ? controls.target : camTarget);
 
   composer.render();
+  resolution.tick();
+  if (fpsEl) fpsEl.textContent = `${resolution.fps.toFixed(0)} fps · ${resolution.ratio.toFixed(2)}x · ${MODE}`;
   requestAnimationFrame(tick);
 }
+
+const fpsEl = SHOW_FPS ? Object.assign(document.createElement('div'), { className: 'fps' }) : null;
+if (fpsEl) document.body.appendChild(fpsEl);
+const resolution = createAdaptiveResolution(renderer, composer);
 tick();
 
 addEventListener('resize', () => {
@@ -272,7 +335,7 @@ function setState({ power: p = 1, station = 1, sway = null } = {}) {
   if (sway !== null) { turntable = false; radio.group.rotation.y = sway; }
 }
 
-window.__radio = { setState, wash, wall, radio, scene, camera, renderer, frameShot, SHOTS, setPower, tuneTo, key, rim, kicker, bloom, bokeh, floor };
+window.__radio = { resolution: () => resolution, QUALITY, MODE, setState, wash, wall, radio, scene, camera, renderer, frameShot, SHOTS, setPower, tuneTo, key, rim, kicker, bloom, bokeh, floor };
 
 // full-resolution still for review: __capture('name.png', 1920, 1080)
 window.__capture = async (name, w = 1920, h = 1080, overlay = null) => {

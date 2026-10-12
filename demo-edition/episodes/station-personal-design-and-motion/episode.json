@@ -1,0 +1,230 @@
+{
+  "key": "station-personal-design-and-motion",
+  "kind": "station",
+  "title": "Personal Design and Motion — The Slow and the Snappy",
+  "station": "personal-design-and-motion",
+  "voice": "host",
+  "audio": "episode.mp3",
+  "duration": 156.668,
+  "checks": {
+    "quotes": 7,
+    "kept": 7
+  },
+  "segments": [
+    {
+      "id": "s01",
+      "kind": "host",
+      "text": "This is Personal Design and Motion, late and low-lit. Something odd sits on your shelf tonight: a pile of people who worship fast, snappy motion, and one quiet note of your own that wants the opposite.",
+      "voice": "bm_george",
+      "start": 1.2,
+      "end": 15.049
+    },
+    {
+      "id": "s02",
+      "kind": "host",
+      "text": "You wrote your own law for how a site should feel. Listen to what you asked motion to actually do.",
+      "voice": "bm_george",
+      "start": 15.399,
+      "end": 21.796
+    },
+    {
+      "id": "s03",
+      "kind": "quote",
+      "text": "Motion should feel physical and slow to settle: text revealing line by line as you scroll, images that open up instead of fading in, sections that pin while something changes.",
+      "voice": "am_fenrir",
+      "speaker": "you, in your own note",
+      "source": {
+        "noteId": "01a0d210-789e-7271-bc6d-8e4ff25dc0e1",
+        "title": "Design Philosophy for Websites",
+        "author": "",
+        "site": "",
+        "url": "",
+        "savedAt": "2026-09-24T06:18:09.992651+00:00",
+        "collection": "Personal Design and Motion"
+      },
+      "start": 22.296,
+      "end": 33.764
+    },
+    {
+      "id": "s04",
+      "kind": "host",
+      "text": "Now hear Emil Kowalski, saved right beside you, almost arguing back.",
+      "voice": "bm_george",
+      "start": 34.364,
+      "end": 39.645
+    },
+    {
+      "id": "s05",
+      "kind": "quote",
+      "text": "Fast animations improve the perceived performance.",
+      "voice": "bf_emma",
+      "speaker": "Emil Kowalski",
+      "source": {
+        "noteId": "01a0d210-2cca-7e11-acde-d588dcf1bd6e",
+        "title": "Great Animations",
+        "author": "",
+        "site": "emilkowal.ski",
+        "url": "https://emilkowal.ski/ui/great-animations",
+        "savedAt": "2026-09-24T06:17:50.546909+00:00",
+        "collection": "Personal Design and Motion"
+      },
+      "start": 40.145,
+      "end": 43.049
+    },
+    {
+      "id": "s06",
+      "kind": "quote",
+      "text": "Snappy animations feel responsive and connected to user's actions.",
+      "voice": "bf_emma",
+      "speaker": "Emil Kowalski",
+      "source": {
+        "noteId": "01a0d210-2cca-7e11-acde-d588dcf1bd6e",
+        "title": "Great Animations",
+        "author": "",
+        "site": "emilkowal.ski",
+        "url": "https://emilkowal.ski/ui/great-animations",
+        "savedAt": "2026-09-24T06:17:50.546909+00:00",
+        "collection": "Personal Design and Motion"
+      },
+      "start": 43.599,
+      "end": 47.613
+    },
+    {
+      "id": "s07",
+      "kind": "host",
+      "text": "So who's right? Maybe both. His fast is for buttons you hit all day. Your slow is for a page someone visits once, and should feel.",
+      "voice": "bm_george",
+      "start": 48.213,
+      "end": 57.13
+    },
+    {
+      "id": "s08",
+      "kind": "host",
+      "text": "Here's where they secretly agree. Emil's real enemy was never slowness. It's the instant.",
+      "voice": "bm_george",
+      "start": 57.48,
+      "end": 63.643
+    },
+    {
+      "id": "s09",
+      "kind": "quote",
+      "text": "Changes in web apps often occur instantly, which makes the experience feel artificial and unfamiliar, since nothing in world around us disappears or appears instantly.",
+      "voice": "bf_emma",
+      "speaker": "Emil Kowalski",
+      "source": {
+        "noteId": "01a0d210-2cca-7e11-acde-d588dcf1bd6e",
+        "title": "Great Animations",
+        "author": "",
+        "site": "emilkowal.ski",
+        "url": "https://emilkowal.ski/ui/great-animations",
+        "savedAt": "2026-09-24T06:17:50.546909+00:00",
+        "collection": "Personal Design and Motion"
+      },
+      "start": 64.143,
+      "end": 74.009
+    },
+    {
+      "id": "s10",
+      "kind": "host",
+      "text": "And the Chrome scroll note, two shelves over, quietly hands you the cure: tie the motion to something real, your own scroll.",
+      "voice": "bm_george",
+      "start": 74.609,
+      "end": 82.469
+    },
+    {
+      "id": "s11",
+      "kind": "quote",
+      "text": "A scroll-driven animation is linked to the scroll position of a scroll container. This means that as you scroll up or down, the linked animation scrubs forward or backward in direct response.",
+      "voice": "am_echo",
+      "speaker": "Bramus, developer.chrome.com",
+      "source": {
+        "noteId": "01a0d210-1a82-7101-9dc0-4f6c810b9f74",
+        "title": "Animate elements on scroll with Scroll-driven animations",
+        "author": "",
+        "site": "developer.chrome.com",
+        "url": "https://developer.chrome.com/docs/css-ui/scroll-driven-animations",
+        "savedAt": "2026-09-24T06:17:45.870301+00:00",
+        "collection": "Personal Design and Motion"
+      },
+      "start": 82.969,
+      "end": 94.04
+    },
+    {
+      "id": "s12",
+      "kind": "host",
+      "text": "That's your word, physical, in one sentence. Your hand moves, the image moves. Nothing appears from nowhere.",
+      "voice": "bm_george",
+      "start": 94.64,
+      "end": 102.014
+    },
+    {
+      "id": "s13",
+      "kind": "host",
+      "text": "Last one, the thing you probably wouldn't notice. All this beauty is really a performance trick wearing a nice coat.",
+      "voice": "bm_george",
+      "start": 102.364,
+      "end": 109.812
+    },
+    {
+      "id": "s14",
+      "kind": "quote",
+      "text": "you should try to animate with transform and opacity as they only trigger the third rendering step (composite), while padding or margin triggers all three (layout, paint, composite).",
+      "voice": "bf_emma",
+      "speaker": "Emil Kowalski",
+      "source": {
+        "noteId": "01a0d210-2cca-7e11-acde-d588dcf1bd6e",
+        "title": "Great Animations",
+        "author": "",
+        "site": "emilkowal.ski",
+        "url": "https://emilkowal.ski/ui/great-animations",
+        "savedAt": "2026-09-24T06:17:50.546909+00:00",
+        "collection": "Personal Design and Motion"
+      },
+      "start": 110.312,
+      "end": 120.45
+    },
+    {
+      "id": "s15",
+      "kind": "host",
+      "text": "And Chrome says the very same thing from the other direction.",
+      "voice": "bm_george",
+      "start": 121.05,
+      "end": 125.202
+    },
+    {
+      "id": "s16",
+      "kind": "quote",
+      "text": "you can now have silky smooth animations, driven by scroll, running off the main thread, with just a few lines of extra code.",
+      "voice": "am_echo",
+      "speaker": "Bramus, developer.chrome.com",
+      "source": {
+        "noteId": "01a0d210-1a82-7101-9dc0-4f6c810b9f74",
+        "title": "Animate elements on scroll with Scroll-driven animations",
+        "author": "",
+        "site": "developer.chrome.com",
+        "url": "https://developer.chrome.com/docs/css-ui/scroll-driven-animations",
+        "savedAt": "2026-09-24T06:17:45.870301+00:00",
+        "collection": "Personal Design and Motion"
+      },
+      "start": 125.702,
+      "end": 133.211
+    },
+    {
+      "id": "s17",
+      "kind": "host",
+      "text": "The elegance you admire on those award pages is partly just work the browser was spared. The calm is engineering.",
+      "voice": "bm_george",
+      "start": 133.811,
+      "end": 141.999
+    },
+    {
+      "id": "s18",
+      "kind": "host",
+      "text": "So carry this into your next build: which moments deserve your slow, physical settle, and which should snap and get out of the way? Sleep on that. This was Personal Design and Motion. Goodnight.",
+      "voice": "bm_george",
+      "start": 142.349,
+      "end": 155.068
+    }
+  ],
+  "scriptHash": "7597311a0517"
+}

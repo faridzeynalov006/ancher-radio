@@ -1,0 +1,176 @@
+[
+  {
+    "id": "01a0d210-789e-7271-bc6d-8e4ff25dc0e1",
+    "title": "Design Philosophy for Websites",
+    "author": null,
+    "site_name": null,
+    "source": "text",
+    "url": null,
+    "status": "ready",
+    "created_at": "2026-09-24T06:18:09.992651+00:00",
+    "description": "The author outlines their design preferences for websites, favoring quiet confidence, editorial serif typography, generous whitespace, and deliberate, physical motion over standard SaaS templates.",
+    "files": [
+      {
+        "id": "01a0d210-7767-7113-ab35-129fe47b2a5b",
+        "mimetype": "text/markdown",
+        "filename": "text.md"
+      }
+    ]
+  },
+  {
+    "id": "01a0d210-6b96-7ea3-a92a-8dea2413ff33",
+    "title": "Introducing ScrollTrigger for GSAP",
+    "author": "GSAP Learning",
+    "site_name": "YouTube",
+    "source": "youtube",
+    "url": "https://www.youtube.com/watch?v=X7IBa7vZjmo",
+    "status": "ready",
+    "created_at": "2026-09-24T06:18:06.621023+00:00",
+    "description": "A visual walkthrough of ScrollTrigger for GSAP which empowers you to create jaw-dropping scroll-based animations with minimal code.\n\nMain page: https://greensock.com/scrolltrigger\nDocs: https://greensock.com/docs/v3/Plugins/ScrollTrigger\nDemos: https://codepen.io/collection/DkvGzg\n\n0:00 Intro and showcase\n1:45 Basics\n2:50 toggleActions \n5:10 \"start\" and \"end\" \n8:51 Scrub animations \n10:57 Pinning \n14:51 Snapping \n17:45 Callbacks and custom options \n21:24 Conclusion",
+    "files": []
+  },
+  {
+    "id": "01a0d210-6177-7122-9476-80a8b9d8fbde",
+    "title": "Scroll Animations - Awwwards",
+    "author": null,
+    "site_name": null,
+    "source": "awwwards",
+    "url": "https://www.awwwards.com/inspiration/scroll-animations",
+    "status": "ready",
+    "created_at": "2026-09-24T06:18:04.032818+00:00",
+    "description": "This Ember House element for your web inspiration was built with scroll, animation, text",
+    "files": []
+  },
+  {
+    "id": "01a0d210-4adb-7270-8f57-0d3ec44a8755",
+    "title": "THE CULT Japanese Restaurant - Awwwards Honorable Mention",
+    "author": null,
+    "site_name": null,
+    "source": "awwwards",
+    "url": "https://www.awwwards.com/sites/the-cult-japanese-restaurant",
+    "status": "ready",
+    "created_at": "2026-09-24T06:17:58.241672+00:00",
+    "description": "Creative project about the fictional restaurant THE CULT, where you can taste the most authentic Japanese dishes from the iconics anime.",
+    "files": []
+  },
+  {
+    "id": "01a0d210-40a0-7193-8a73-94a5cf606ee5",
+    "title": "Imperiale Bolgheri - Awwwards Honorable Mention",
+    "author": null,
+    "site_name": null,
+    "source": "awwwards",
+    "url": "https://www.awwwards.com/sites/imperiale-bolgheri",
+    "status": "ready",
+    "created_at": "2026-09-24T06:17:55.623771+00:00",
+    "description": "Imperiale Bolgheri is a family-run winery in the heart of Bolgheri, created to craft premium wines with a distinctive personality: fresh, immediate and...",
+    "files": []
+  },
+  {
+    "id": "01a0d210-361e-7aa3-9f8f-e1618f70ee4b",
+    "title": "Good vs Great Animations",
+    "author": null,
+    "site_name": null,
+    "source": "emilkowal",
+    "url": "https://emilkowal.ski/ui/good-vs-great-animations",
+    "status": "ready",
+    "created_at": "2026-09-24T06:17:52.932994+00:00",
+    "description": "Practical tips on how to go from good to great animations.",
+    "files": []
+  },
+  {
+    "id": "01a0d210-2cca-7e11-acde-d588dcf1bd6e",
+    "title": "Great Animations",
+    "author": null,
+    "site_name": null,
+    "source": "emilkowal",
+    "url": "https://emilkowal.ski/ui/great-animations",
+    "status": "ready",
+    "created_at": "2026-09-24T06:17:50.546909+00:00",
+    "description": "What it takes to craft great animations.",
+    "files": []
+  },
+  {
+    "id": "01a0d210-1a82-7101-9dc0-4f6c810b9f74",
+    "title": "Animate elements on scroll with Scroll-driven animations",
+    "author": null,
+    "site_name": null,
+    "source": "developer",
+    "url": "https://developer.chrome.com/docs/css-ui/scroll-driven-animations",
+    "status": "ready",
+    "created_at": "2026-09-24T06:17:45.870301+00:00",
+    "description": "Learn how to work with Scroll Timelines and View Timelines to create scroll-driven animations in a declarative way.",
+    "files": []
+  },
+  {
+    "id": "01a0d210-0dbc-76b1-97f1-629b6ede2a77",
+    "title": "ScrollTrigger | GSAP | Docs & Learning",
+    "author": null,
+    "site_name": null,
+    "source": "gsap",
+    "url": "https://gsap.com/docs/v3/Plugins/ScrollTrigger",
+    "status": "ready",
+    "created_at": "2026-09-24T06:17:42.594693+00:00",
+    "description": "ScrollTrigger enables anyone to create jaw-dropping scroll-based animations with minimal code. Infinitely flexible. Scrub, pin, snap, or just trigger anything scroll-related, even if it has nothing to do with animation.",
+    "files": []
+  },
+  {
+    "id": "01a0d210-03eb-7062-9301-03682b658b7f",
+    "title": "How to create a text clip mask on scroll animation with React, CSS and Next.js",
+    "author": null,
+    "site_name": null,
+    "source": "blog",
+    "url": "https://blog.olivierlarose.com/tutorials/text-clip-mask-on-scroll",
+    "status": "ready",
+    "created_at": "2026-09-24T06:17:40.083137+00:00",
+    "description": "An on scroll animation that gradually expands a text mask that clips a video, made with React, CSS and Next.js.",
+    "files": []
+  },
+  {
+    "id": "01a0d20f-f746-7393-a1fd-5b10968feb98",
+    "title": "How to use a mask to animate HTML text when in view using React, Framer Motion and Next.js",
+    "author": null,
+    "site_name": null,
+    "source": "blog",
+    "url": "https://blog.olivierlarose.com/tutorials/text-mask-animation",
+    "status": "ready",
+    "created_at": "2026-09-24T06:17:36.850644+00:00",
+    "description": "An animation featuring a text sliding effect with a mask, to give the effect of text gradually appearing when in view. Made with React and Framer Motion in a Next.js environment.",
+    "files": []
+  },
+  {
+    "id": "01a0d20f-e885-7a33-9604-60b1736af454",
+    "title": "Sticky Grid Scroll: Building a Scroll-Driven Animated Grid | Codrops",
+    "author": null,
+    "site_name": null,
+    "source": "tympanus",
+    "url": "https://tympanus.net/codrops/2026/03/02/sticky-grid-scroll-building-a-scroll-driven-animated-grid",
+    "status": "ready",
+    "created_at": "2026-09-24T06:17:33.074443+00:00",
+    "description": "Learn how to build a structured scroll-driven image grid where movement unfolds progressively within a sticky layout.",
+    "files": []
+  },
+  {
+    "id": "01a0d20f-dcab-70e1-9356-71fc801888fe",
+    "title": "Building a Scroll-Driven Dual-Wave Text Animation with GSAP | Codrops",
+    "author": null,
+    "site_name": null,
+    "source": "tympanus",
+    "url": "https://tympanus.net/codrops/2026/01/15/building-a-scroll-driven-dual-wave-text-animation-with-gsap",
+    "status": "ready",
+    "created_at": "2026-09-24T06:17:30.035158+00:00",
+    "description": "Learn how to create smooth, opposing wave text animations across dual columns with scroll-driven sine wave mathematics and synchronized image updates.",
+    "files": []
+  },
+  {
+    "id": "01a0d20f-d25c-7d80-b110-3cc7e7463e8d",
+    "title": "Creating 3D Scroll-Driven Text Animations with CSS and GSAP | Codrops",
+    "author": null,
+    "site_name": null,
+    "source": "tympanus",
+    "url": "https://tympanus.net/codrops/2025/11/04/creating-3d-scroll-driven-text-animations-with-css-and-gsap",
+    "status": "ready",
+    "created_at": "2026-09-24T06:17:27.397188+00:00",
+    "description": "A step-by-step guide to building high-performance 3D scroll effects with GSAP, ScrollTrigger, and CSS transform math.",
+    "files": []
+  }
+]

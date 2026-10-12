@@ -1,6 +1,13 @@
 # installed with `npm install`
 node_modules/
 
+# your own Ancher data stays on your machine:
+# the edition built from your library, the responses recorded from it, and your settings/key
+edition/
+engine/fixtures/
+.env
+models/
+
 # rendered films, captured frames and local experiments
 renders/
 shots/

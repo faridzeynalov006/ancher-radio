@@ -1,0 +1,87 @@
+{
+  "key": "crossover-personal-design-and-motion-better-product-stories",
+  "kind": "crossover",
+  "title": "Caught Between Stations: Now and Not-Yet",
+  "between": [
+    "personal-design-and-motion",
+    "better-product-stories"
+  ],
+  "voice": "host",
+  "audio": "episode.mp3",
+  "duration": 57.66,
+  "checks": {
+    "quotes": 2,
+    "kept": 2
+  },
+  "segments": [
+    {
+      "id": "s01",
+      "kind": "host",
+      "text": "Late tonight you're caught right between two signals on your own dial. On one side, Personal Design and Motion. On the other, Better product stories. Hold still, the static's telling you something.",
+      "voice": "bm_george",
+      "start": 1.2,
+      "end": 14.161
+    },
+    {
+      "id": "s02",
+      "kind": "host",
+      "text": "Over on the design shelf, everything begs to be fast, to land in the present, to feel like it's already here with you. Listen to this one.",
+      "voice": "bm_george",
+      "start": 14.511,
+      "end": 23.507
+    },
+    {
+      "id": "s03",
+      "kind": "quote",
+      "text": "Snappy animations feel responsive and connected to user's actions.",
+      "voice": "am_fenrir",
+      "speaker": "Emil Kowalski",
+      "source": {
+        "noteId": "01a0d210-2cca-7e11-acde-d588dcf1bd6e",
+        "title": "Great Animations",
+        "author": "",
+        "site": "emilkowal.ski",
+        "url": "https://emilkowal.ski/ui/great-animations",
+        "savedAt": "2026-09-24T06:17:50.546909+00:00",
+        "collection": "Personal Design and Motion"
+      },
+      "start": 24.007,
+      "end": 28.087
+    },
+    {
+      "id": "s04",
+      "kind": "host",
+      "text": "But flip the dial to your product stories, and the whole craft points the other way, away from the instant you're standing in, toward something that hasn't arrived yet. Hear it.",
+      "voice": "bm_george",
+      "start": 28.687,
+      "end": 39.954
+    },
+    {
+      "id": "s05",
+      "kind": "quote",
+      "text": "The future isn't a place that we're going to go. It's a place that you get to create.",
+      "voice": "bf_emma",
+      "speaker": "Nancy Duarte",
+      "source": {
+        "noteId": "01a0c70f-605c-7cc0-80ee-2cb7f0aabb4b",
+        "title": "TEDxEast - Nancy Duarte uncovers common structure of greatest communicators 11/11/2010",
+        "author": "TEDx Talks",
+        "site": "YouTube",
+        "url": "https://www.youtube.com/watch?v=1nYFpuc2Umk",
+        "savedAt": "2026-09-22T03:01:08.835633+00:00",
+        "collection": "Better product stories"
+      },
+      "start": 40.454,
+      "end": 45.1
+    },
+    {
+      "id": "s06",
+      "kind": "host",
+      "text": "So here's the crossover: one shelf wins by vanishing into right now, the other by making you ache for later. Both are pulling at the very same gap. You.",
+      "voice": "bm_george",
+      "start": 45.7,
+      "end": 56.06
+    }
+  ],
+  "scriptHash": "effe32c99134"
+}

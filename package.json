@@ -1,15 +1,21 @@
 {
   "name": "ancher-radio",
-  "version": "1.0.0",
-  "main": "index.js",
+  "version": "2.0.0",
+  "description": "A code-built 3D table radio whose stations are your Ancher collections, playing shows Ancher writes from the connections between your saves.",
+  "type": "module",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "python3 serve.py",
+    "edition": "node engine/build.js",
+    "edition:replay": "node engine/build.js --replay",
+    "edition:demo": "node engine/build.js --demo",
+    "test": "node --test engine/test/*.test.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
+    "@ancher-ai/sdk": "^0.5.0",
     "three": "^0.186.1"
   }
 }

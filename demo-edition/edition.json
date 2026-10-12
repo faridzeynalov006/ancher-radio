@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "builtAt": "2026-10-12T10:29:20.556Z",
+  "source": "replay",
+  "voice": "host",
+  "stations": [
+    {
+      "id": "01a0d20f-b9f1-7420-b334-e2cf6e35861c",
+      "slug": "personal-design-and-motion",
+      "name": "Personal Design and Motion",
+      "label": "Design & Motion",
+      "color": "#C77A12",
+      "noteCount": 14,
+      "onAir": true,
+      "episode": "episodes/station-personal-design-and-motion/episode.json"
+    },
+    {
+      "id": "01a0c70d-dd05-7953-9d7e-0bb8edc67303",
+      "slug": "better-product-stories",
+      "name": "Better product stories",
+      "label": "Product Stories",
+      "color": "#C77A12",
+      "noteCount": 6,
+      "onAir": true,
+      "episode": "episodes/station-better-product-stories/episode.json"
+    },
+    {
+      "id": "01a0cd19-7831-7063-bc76-81b194a2d478",
+      "slug": "first-100-users",
+      "name": "First 100 Users",
+      "label": "First 100 Users",
+      "color": "#E0650F",
+      "noteCount": 5,
+      "onAir": true,
+      "episode": "episodes/station-first-100-users/episode.json"
+    }
+  ],
+  "crossover": {
+    "between": [
+      "personal-design-and-motion",
+      "better-product-stories"
+    ],
+    "episode": "episodes/crossover-personal-design-and-motion-better-product-stories/episode.json"
+  },
+  "justSaved": null
+}

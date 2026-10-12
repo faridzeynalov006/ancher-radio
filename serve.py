@@ -27,6 +27,11 @@ class Handler(SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(b'ok')
 
+    def end_headers(self):
+        # always serve the latest files (browsers otherwise keep stale ES modules after an update)
+        self.send_header('Cache-Control', 'no-store')
+        super().end_headers()
+
     def log_message(self, *a):
         pass
 

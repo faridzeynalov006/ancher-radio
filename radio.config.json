@@ -1,0 +1,16 @@
+{
+  "minNotes": 3,
+  "exclude": ["Radio"],
+  "excludePrefixes": ["[Sample]"],
+  "labels": {
+    "Personal Design and Motion": "Design & Motion",
+    "Better product stories": "Product Stories",
+    "Video Editing Market Research": "Video Editing"
+  },
+  "crossover": "auto",
+  "voice": "host",
+  "voices": {
+    "host": { "voice": "bm_george", "speed": 0.92 },
+    "quotes": ["am_fenrir", "bf_emma", "am_echo", "bm_fable", "af_bella"]
+  }
+}

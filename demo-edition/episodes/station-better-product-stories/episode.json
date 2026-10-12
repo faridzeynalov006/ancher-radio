@@ -1,0 +1,204 @@
+{
+  "key": "station-better-product-stories",
+  "kind": "station",
+  "title": "Better product stories — The Night Everyone Argued About the Dream",
+  "station": "better-product-stories",
+  "voice": "host",
+  "audio": "episode.mp3",
+  "duration": 132.972,
+  "checks": {
+    "quotes": 6,
+    "kept": 6
+  },
+  "segments": [
+    {
+      "id": "s01",
+      "kind": "host",
+      "text": "This is Better product stories, your late-night shelf of people who all teach persuasion for a living. What's odd tonight is how gently, and how completely, a few of them disagree with each other.",
+      "voice": "bm_george",
+      "start": 1.2,
+      "end": 13.551
+    },
+    {
+      "id": "s02",
+      "kind": "host",
+      "text": "Start with a quiet agreement first. Three of your voices all say the same unglamorous thing, that the pitch is not about you. Nancy Duarte puts it bluntly, talking about presenters.",
+      "voice": "bm_george",
+      "start": 13.901,
+      "end": 26.202
+    },
+    {
+      "id": "s03",
+      "kind": "quote",
+      "text": "So in reality, the presenter isn't the hero, the audience is the hero of our idea.",
+      "voice": "am_fenrir",
+      "speaker": "Nancy Duarte",
+      "source": {
+        "noteId": "01a0c70f-605c-7cc0-80ee-2cb7f0aabb4b",
+        "title": "TEDxEast - Nancy Duarte uncovers common structure of greatest communicators 11/11/2010",
+        "author": "TEDx Talks",
+        "site": "YouTube",
+        "url": "https://www.youtube.com/watch?v=1nYFpuc2Umk",
+        "savedAt": "2026-09-22T03:01:08.835633+00:00",
+        "collection": "Better product stories"
+      },
+      "start": 26.702,
+      "end": 32.124
+    },
+    {
+      "id": "s04",
+      "kind": "host",
+      "text": "Kevin Hale, coaching founders in front of investors, lands in the exact same place from the other side of the table.",
+      "voice": "bm_george",
+      "start": 32.724,
+      "end": 40.811
+    },
+    {
+      "id": "s05",
+      "kind": "quote",
+      "text": "your goal is just to be clear. I will do everything else.",
+      "voice": "bf_emma",
+      "speaker": "Kevin Hale",
+      "source": {
+        "noteId": "01a0c70e-9490-7dd3-95fa-6c8d90167616",
+        "title": "Kevin Hale - How to Pitch Your Startup",
+        "author": "Y Combinator",
+        "site": "YouTube",
+        "url": "https://www.youtube.com/watch?v=17XZGUX_9iM",
+        "savedAt": "2026-09-22T03:00:16.666147+00:00",
+        "collection": "Better product stories"
+      },
+      "start": 41.311,
+      "end": 44.325
+    },
+    {
+      "id": "s06",
+      "kind": "host",
+      "text": "And Wes Kao, dissecting a cold sales note that actually worked, turns that same instinct into a ratio you can almost measure.",
+      "voice": "bm_george",
+      "start": 44.925,
+      "end": 54.215
+    },
+    {
+      "id": "s07",
+      "kind": "quote",
+      "text": "When you frame 90% around how your recipient benefits, they are much more likely to take action.",
+      "voice": "am_echo",
+      "speaker": "Wes Kao",
+      "source": {
+        "noteId": "01a0c70e-6cec-7e71-a42f-89c61107667a",
+        "title": "The Anatomy of a Great Cold Sales Pitch",
+        "author": "weskao",
+        "site": "LinkedIn",
+        "url": "https://www.linkedin.com/posts/weskao_this-is-the-best-cold-sales-pitch-ive-ever-activity-7173694145969041408-D931",
+        "savedAt": "2026-09-22T03:00:06.522422+00:00",
+        "collection": "Better product stories"
+      },
+      "start": 54.715,
+      "end": 60.414
+    },
+    {
+      "id": "s08",
+      "kind": "host",
+      "text": "So far, harmony. Now the argument. Duarte wants you to open a gap between today and a glorious tomorrow, and stretch it wide.",
+      "voice": "bm_george",
+      "start": 61.014,
+      "end": 69.65
+    },
+    {
+      "id": "s09",
+      "kind": "quote",
+      "text": "You need to make that gap as big as possible",
+      "voice": "am_fenrir",
+      "speaker": "Nancy Duarte",
+      "source": {
+        "noteId": "01a0c70f-605c-7cc0-80ee-2cb7f0aabb4b",
+        "title": "TEDxEast - Nancy Duarte uncovers common structure of greatest communicators 11/11/2010",
+        "author": "TEDx Talks",
+        "site": "YouTube",
+        "url": "https://www.youtube.com/watch?v=1nYFpuc2Umk",
+        "savedAt": "2026-09-22T03:01:08.835633+00:00",
+        "collection": "Better product stories"
+      },
+      "start": 70.15,
+      "end": 72.441
+    },
+    {
+      "id": "s10",
+      "kind": "host",
+      "text": "But April Dunford, two shelves over, thinks selling that shining future is exactly how you lose the sale right now.",
+      "voice": "bm_george",
+      "start": 73.041,
+      "end": 81.098
+    },
+    {
+      "id": "s11",
+      "kind": "quote",
+      "text": "most companies (unlike investors) aren't going to trade today's dollars for tomorrow's promises.",
+      "voice": "bm_fable",
+      "speaker": "April Dunford",
+      "source": {
+        "noteId": "01a0c70f-330d-7ee3-8e99-a34918c63918",
+        "title": "Sell What's on the Truck: The Importance of Present Value in Positioning",
+        "author": "aprildunford",
+        "site": "LinkedIn",
+        "url": "https://www.linkedin.com/posts/aprildunford_in-positioning-we-have-to-stay-focused-on-activity-7107051666381701120-Dutm",
+        "savedAt": "2026-09-22T03:00:57.249395+00:00",
+        "collection": "Better product stories"
+      },
+      "start": 81.598,
+      "end": 86.954
+    },
+    {
+      "id": "s12",
+      "kind": "host",
+      "text": "Hear that together and it reframes Duarte. Her soaring what-could-be is rocket fuel on a stage, but at a sales desk it hands the buyer a reason to wait.",
+      "voice": "bm_george",
+      "start": 87.554,
+      "end": 98.153
+    },
+    {
+      "id": "s13",
+      "kind": "host",
+      "text": "One last twist. Duarte says story is the magic that makes ideas stick. Hale, reading a thousand applications, warns that the same story reflex buries your actual product.",
+      "voice": "bm_george",
+      "start": 98.503,
+      "end": 110.906
+    },
+    {
+      "id": "s14",
+      "kind": "quote",
+      "text": "lead with what, not, why, or how.",
+      "voice": "bf_emma",
+      "speaker": "Kevin Hale",
+      "source": {
+        "noteId": "01a0c70e-9490-7dd3-95fa-6c8d90167616",
+        "title": "Kevin Hale - How to Pitch Your Startup",
+        "author": "Y Combinator",
+        "site": "YouTube",
+        "url": "https://www.youtube.com/watch?v=17XZGUX_9iM",
+        "savedAt": "2026-09-22T03:00:16.666147+00:00",
+        "collection": "Better product stories"
+      },
+      "start": 111.406,
+      "end": 113.522
+    },
+    {
+      "id": "s15",
+      "kind": "host",
+      "text": "So the shelf leaves you a real question to carry into your next piece of work. Where does your audience actually need the dream, and where do they just need to know what's on the truck?",
+      "voice": "bm_george",
+      "start": 114.122,
+      "end": 125.105
+    },
+    {
+      "id": "s16",
+      "kind": "host",
+      "text": "That's the station for tonight. Sleep on it, and I'll see you next time on Better product stories.",
+      "voice": "bm_george",
+      "start": 125.455,
+      "end": 131.372
+    }
+  ],
+  "scriptHash": "2a6349f1dbff"
+}

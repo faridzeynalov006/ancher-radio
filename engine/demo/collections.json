@@ -1,0 +1,23 @@
+[
+  {
+    "id": "01a0d20f-b9f1-7420-b334-e2cf6e35861c",
+    "name": "Personal Design and Motion",
+    "color": "amber",
+    "description": "My taste in web design and motion: scroll motion, kinetic type, and the sites I think get it right.",
+    "status": "active"
+  },
+  {
+    "id": "01a0cd19-7831-7063-bc76-81b194a2d478",
+    "name": "First 100 Users",
+    "color": "orange",
+    "description": "How great founders got their first hundred users, in their own words. Source library for Founder Atlas.",
+    "status": "active"
+  },
+  {
+    "id": "01a0c70d-dd05-7953-9d7e-0bb8edc67303",
+    "name": "Better product stories",
+    "color": "amber",
+    "description": null,
+    "status": "active"
+  }
+]

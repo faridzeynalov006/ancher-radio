@@ -80,7 +80,7 @@ function knurledKnob(r, h, mats, ridges = 54) {
   return g;
 }
 
-export function buildRadio(renderer, { symbolPaths = [] } = {}) {
+export function buildRadio(renderer, { symbolPaths = [], realGlass = false } = {}) {
   const maxAniso = renderer.capabilities.getMaxAnisotropy();
   const wood = walnutTextures();
   const cloth = clothTextures();
@@ -116,10 +116,17 @@ export function buildRadio(renderer, { symbolPaths = [] } = {}) {
       map: dialTex, emissiveMap: dialTex, emissive: new THREE.Color('#ffa040'), emissiveIntensity: 0,
       roughness: 0.6,
     }),
-    glass: new THREE.MeshPhysicalMaterial({
-      color: '#ffffff', metalness: 0, roughness: 0.02, transmission: 1, thickness: 0.08, ior: 1.5,
-      clearcoat: 1, clearcoatRoughness: 0.02, specularIntensity: 1,
-    }),
+    // Real transmission renders the whole scene a second time every frame (21 fps vs 54 on an M1),
+    // so live mode uses a clear-coated transparent shell that keeps the highlights.
+    glass: realGlass
+      ? new THREE.MeshPhysicalMaterial({
+        color: '#ffffff', metalness: 0, roughness: 0.02, transmission: 1, thickness: 0.08, ior: 1.5,
+        clearcoat: 1, clearcoatRoughness: 0.02, specularIntensity: 1,
+      })
+      : new THREE.MeshPhysicalMaterial({
+        color: '#ffffff', metalness: 0, roughness: 0.02, transparent: true, opacity: 0.14, depthWrite: false,
+        clearcoat: 1, clearcoatRoughness: 0.02, specularIntensity: 1,
+      }),
     needle: new THREE.MeshStandardMaterial({ color: '#EB7514', emissive: '#EB7514', emissiveIntensity: 0.15, roughness: 0.4 }),
     lamp: new THREE.MeshPhysicalMaterial({
       color: '#7a2f06', emissive: '#ff8a2a', emissiveIntensity: 0, roughness: 0.1, transmission: 0.2, clearcoat: 1,

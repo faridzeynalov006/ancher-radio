@@ -1,0 +1,238 @@
+{
+  "key": "station-first-100-users",
+  "kind": "station",
+  "title": "First 100 Users: The Quiet Art of Turning People Away",
+  "station": "first-100-users",
+  "voice": "host",
+  "audio": "episode.mp3",
+  "duration": 176.134,
+  "checks": {
+    "quotes": 7,
+    "kept": 7
+  },
+  "segments": [
+    {
+      "id": "s01",
+      "kind": "host",
+      "text": "This is First 100 Users, your late-night signal. Everything on tonight's shelf is about winning your first customers. Yet the strongest voices keep telling you who to ignore, and what not to do.",
+      "voice": "bm_george",
+      "start": 1.2,
+      "end": 14.569
+    },
+    {
+      "id": "s02",
+      "kind": "host",
+      "text": "Start with the launch. You and I treat it as the big moment. But Paul Graham, writing on doing things that don't scale, just shrugs at the whole idea of it.",
+      "voice": "bm_george",
+      "start": 14.919,
+      "end": 25.617
+    },
+    {
+      "id": "s03",
+      "kind": "quote",
+      "text": "Think of some successful startups. How many of their launches do you remember?",
+      "voice": "am_fenrir",
+      "speaker": "Paul Graham",
+      "source": {
+        "noteId": "01a0cd1a-103c-7083-8e2e-5aa4c5795a08",
+        "title": "Do Things that Don't Scale",
+        "author": "Paul Graham",
+        "site": "paulgraham.com",
+        "url": "https://paulgraham.com/ds.html",
+        "savedAt": "2026-09-23T07:10:32.515435+00:00",
+        "collection": "First 100 Users"
+      },
+      "start": 26.117,
+      "end": 30.707
+    },
+    {
+      "id": "s04",
+      "kind": "host",
+      "text": "Now hear Rahul Vohra of Superhuman. Two years of coding, fourteen people, and still no launch, because throwing it out there felt wrong to him.",
+      "voice": "bm_george",
+      "start": 31.307,
+      "end": 41.123
+    },
+    {
+      "id": "s05",
+      "kind": "quote",
+      "text": "the \"launch and see what happens\" method seemed irresponsible and reckless to me",
+      "voice": "bf_emma",
+      "speaker": "Rahul Vohra, Superhuman",
+      "source": {
+        "noteId": "01a0cd2a-3eac-7a72-9a15-66436ab69561",
+        "title": "How Superhuman Built an Engine to Find Product Market Fit",
+        "author": "",
+        "site": "review.firstround.com",
+        "url": "https://review.firstround.com/how-superhuman-built-an-engine-to-find-product-market-fit",
+        "savedAt": "2026-09-23T07:28:13.044415+00:00",
+        "collection": "First 100 Users"
+      },
+      "start": 41.623,
+      "end": 45.805
+    },
+    {
+      "id": "s06",
+      "kind": "host",
+      "text": "So two notes, in different rooms, quietly agree. The launch you're agonising over barely matters. What you do with the handful who actually show up matters far more.",
+      "voice": "bm_george",
+      "start": 46.405,
+      "end": 57.123
+    },
+    {
+      "id": "s07",
+      "kind": "host",
+      "text": "Which opens a stranger question. Who do you serve? Graham says pour yourself into every early user, and feel no fear at all about overdoing it.",
+      "voice": "bm_george",
+      "start": 57.473,
+      "end": 67.438
+    },
+    {
+      "id": "s08",
+      "kind": "quote",
+      "text": "I have never once seen a startup lured down a blind alley by trying too hard to make their initial users happy.",
+      "voice": "am_fenrir",
+      "speaker": "Paul Graham",
+      "source": {
+        "noteId": "01a0cd1a-103c-7083-8e2e-5aa4c5795a08",
+        "title": "Do Things that Don't Scale",
+        "author": "Paul Graham",
+        "site": "paulgraham.com",
+        "url": "https://paulgraham.com/ds.html",
+        "savedAt": "2026-09-23T07:10:32.515435+00:00",
+        "collection": "First 100 Users"
+      },
+      "start": 67.938,
+      "end": 74.723
+    },
+    {
+      "id": "s09",
+      "kind": "host",
+      "text": "But Vohra, hunting product-market fit, says some users you should coldly turn your back on. Listen to how blunt he lets himself be.",
+      "voice": "bm_george",
+      "start": 75.323,
+      "end": 84.355
+    },
+    {
+      "id": "s10",
+      "kind": "quote",
+      "text": "Politely disregard those who would not be disappointed without your product. They are so far from loving you that they are essentially a lost cause.",
+      "voice": "bf_emma",
+      "speaker": "Rahul Vohra, Superhuman",
+      "source": {
+        "noteId": "01a0cd2a-3eac-7a72-9a15-66436ab69561",
+        "title": "How Superhuman Built an Engine to Find Product Market Fit",
+        "author": "",
+        "site": "review.firstround.com",
+        "url": "https://review.firstround.com/how-superhuman-built-an-engine-to-find-product-market-fit",
+        "savedAt": "2026-09-23T07:28:13.044415+00:00",
+        "collection": "First 100 Users"
+      },
+      "start": 84.855,
+      "end": 92.695
+    },
+    {
+      "id": "s11",
+      "kind": "host",
+      "text": "And the Y Combinator talk on first customers nods along, telling you to cut people loose without flinching.",
+      "voice": "bm_george",
+      "start": 93.295,
+      "end": 100.58
+    },
+    {
+      "id": "s12",
+      "kind": "quote",
+      "text": "don't be afraid of letting customers go",
+      "voice": "am_echo",
+      "speaker": "Gustav, Y Combinator Startup School",
+      "source": {
+        "noteId": "01a0cd1c-26ba-7fc1-a5a6-b912fb1a2bef",
+        "title": "How to Get Your First Customers | Startup School",
+        "author": "Y Combinator",
+        "site": "YouTube",
+        "url": "https://www.youtube.com/watch?v=hyYCn_kAngI",
+        "savedAt": "2026-09-23T07:12:49.432004+00:00",
+        "collection": "First 100 Users"
+      },
+      "start": 101.08,
+      "end": 103.68
+    },
+    {
+      "id": "s13",
+      "kind": "host",
+      "text": "Feel the tension? Delight everyone, says one. Delight the right ones and release the rest, say the others. The quiet reconciliation is this. Lavish love, but only where it compounds.",
+      "voice": "bm_george",
+      "start": 104.28,
+      "end": 116.348
+    },
+    {
+      "id": "s14",
+      "kind": "host",
+      "text": "Last thread, and the oddest one. The money itself. Pieter Levels, looking back on the whole digital nomad boom, spotted a pattern in exactly who survived it.",
+      "voice": "bm_george",
+      "start": 116.698,
+      "end": 127.385
+    },
+    {
+      "id": "s15",
+      "kind": "quote",
+      "text": "the bigger the bet financially the more financial engineering there is when it goes wrong and the higher odds you end up with the entire thing just disappearing into a black hole",
+      "voice": "bm_fable",
+      "speaker": "Pieter Levels (@levelsio)",
+      "source": {
+        "noteId": "01a0cd2f-45fe-7d22-9595-7123824f6f7e",
+        "title": "The Rise and Fall of the Digital Nomad Startup Boom",
+        "author": "@levelsio (@levelsio)",
+        "site": "X",
+        "url": "https://x.com/levelsio/status/1977740137837547686",
+        "savedAt": "2026-09-23T07:33:42.533661+00:00",
+        "collection": "First 100 Users"
+      },
+      "start": 127.885,
+      "end": 137.159
+    },
+    {
+      "id": "s16",
+      "kind": "host",
+      "text": "And Vohra, deep inside venture-backed startup land, arrives at the very same warning, only he's facing it from the inside out.",
+      "voice": "bm_george",
+      "start": 137.759,
+      "end": 146.807
+    },
+    {
+      "id": "s17",
+      "kind": "quote",
+      "text": "Investors advising early-stage teams should avoid pushing for growth ahead of product-market fit.",
+      "voice": "bf_emma",
+      "speaker": "Rahul Vohra, Superhuman",
+      "source": {
+        "noteId": "01a0cd2a-3eac-7a72-9a15-66436ab69561",
+        "title": "How Superhuman Built an Engine to Find Product Market Fit",
+        "author": "",
+        "site": "review.firstround.com",
+        "url": "https://review.firstround.com/how-superhuman-built-an-engine-to-find-product-market-fit",
+        "savedAt": "2026-09-23T07:28:13.044415+00:00",
+        "collection": "First 100 Users"
+      },
+      "start": 147.307,
+      "end": 152.991
+    },
+    {
+      "id": "s18",
+      "kind": "host",
+      "text": "So here's the question to carry into your next piece of work. Which of your users actually compound, and which just make noise on the way out?",
+      "voice": "bm_george",
+      "start": 153.591,
+      "end": 162.937
+    },
+    {
+      "id": "s19",
+      "kind": "host",
+      "text": "And underneath that, a harder one. Are you funding patience, or buying pressure you'll spend years trying to outrun? Sleep on it. This has been First 100 Users.",
+      "voice": "bm_george",
+      "start": 163.287,
+      "end": 174.534
+    }
+  ],
+  "scriptHash": "68161ad676a0"
+}
