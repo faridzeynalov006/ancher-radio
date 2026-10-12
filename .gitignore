@@ -1,0 +1,17 @@
+# installed with `npm install`
+node_modules/
+
+# rendered films, captured frames and local experiments
+renders/
+shots/
+tests/
+
+# generated or third-party audio (see README, "Audio pipeline")
+audio/*.wav
+audio/vo/
+audio/vo2/
+audio/sfx/
+audio/sfx2/
+
+.claude/
+.DS_Store

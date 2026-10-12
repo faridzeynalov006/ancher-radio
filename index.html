@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ancher Radio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Manrope:wght@400;500;600;700&display=block" rel="stylesheet" />
+  <style>
+    :root { --bg: #0f0e0c; --ink: #eeeeec; --muted: #8d8d86; --accent: #EB7514; }
+    * { box-sizing: border-box; margin: 0; }
+    html, body { height: 100%; background: var(--bg); overflow: hidden; }
+    #stage canvas { display: block; }
+    .hud {
+      position: fixed; left: 28px; bottom: 24px; color: var(--muted);
+      font: 500 12px/1.6 Manrope, sans-serif; letter-spacing: 0.04em; pointer-events: none;
+      transition: opacity .4s;
+    }
+    .hud b { color: var(--ink); font-weight: 600; }
+    .hud .now { font: 400 22px/1.2 "Hedvig Letters Serif", serif; color: var(--ink); margin-bottom: 8px; letter-spacing: 0; }
+    .hud .now span { color: var(--accent); }
+    body.clean .hud { opacity: 0; }
+  </style>
+  <script type="importmap">
+    { "imports": {
+      "three": "./node_modules/three/build/three.module.js",
+      "three/addons/": "./node_modules/three/examples/jsm/"
+    } }
+  </script>
+</head>
+<body>
+  <div id="stage"></div>
+  <div class="hud">
+    <div class="now"><span>&#9679;</span> <span id="station" style="color:inherit">Off</span></div>
+    <div>Shot <b id="shot">Hero</b> &nbsp;·&nbsp; 1–5 cameras &nbsp;·&nbsp; drag to orbit &nbsp;·&nbsp; ← → tune &nbsp;·&nbsp; space power &nbsp;·&nbsp; T sway &nbsp;·&nbsp; H hide</div>
+  </div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

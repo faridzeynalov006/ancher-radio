@@ -1,0 +1,29 @@
+{
+  "_note": "Every quote is verbatim from Farid's Ancher library (kind=content chunks or the saved post text). The crossover line is Ancher's own agent answer (conversation 01a0fd39-b0b7-7ae2-a79c-bd87ec88b8bf).",
+  "segments": [
+    { "id": "h1", "part": "show", "voice": "af_heart", "text": "Good evening. You're tuned to First 100 Users: the things you saved about finding your first customers." },
+    { "id": "h2", "part": "show", "voice": "af_heart", "text": "First, an essay you kept on September twenty-third." },
+    { "id": "q1", "part": "show", "voice": "am_michael", "quote": true, "text": "You can't wait for users to come to you. You have to go out and get them.",
+      "source": { "who": "Paul Graham", "title": "Do Things that Don't Scale", "site": "paulgraham.com", "saved": "Saved Sep 23" } },
+    { "id": "h3", "part": "show", "voice": "af_heart", "text": "Paul Graham. Same essay, on how the Collison brothers signed up Stripe's first users." },
+    { "id": "q2", "part": "show", "voice": "am_michael", "quote": true, "text": "Right then, give me your laptop.",
+      "source": { "who": "Paul Graham, on Stripe", "title": "Do Things that Don't Scale", "site": "paulgraham.com", "saved": "Saved Sep 23" } },
+    { "id": "h4", "part": "show", "voice": "af_heart", "text": "And from the Superhuman story you saved that same afternoon, one question." },
+    { "id": "q3", "part": "show", "voice": "am_adam", "quote": true, "text": "How would you feel if you could no longer use the product?",
+      "source": { "who": "Rahul Vohra, Superhuman", "title": "How Superhuman Built an Engine to Find Product Market Fit", "site": "First Round Review", "saved": "Saved Sep 23" } },
+    { "id": "h5", "part": "show", "voice": "af_heart", "text": "Three founders. One move. Nobody waited to be found." },
+
+    { "id": "x1", "part": "cross", "voice": "af_heart", "text": "Between First 100 Users and Product Stories, Ancher found something both shelves agree on." },
+    { "id": "x2", "part": "cross", "voice": "af_heart", "text": "You win people not by selling your big vision, but by the benefit one real person feels right now." },
+    { "id": "q4", "part": "cross", "voice": "am_michael", "quote": true, "text": "You should take extraordinary measures not just to acquire users, but also to make them happy.",
+      "source": { "who": "Paul Graham", "title": "Do Things that Don't Scale", "site": "First 100 Users", "saved": "Saved Sep 23" } },
+    { "id": "q5", "part": "cross", "voice": "af_bella", "quote": true, "text": "When you frame ninety percent around how your recipient benefits, they are much more likely to take action.",
+      "source": { "who": "Wes Kao", "title": "The Anatomy of a Great Cold Sales Pitch", "site": "Product Stories", "saved": "Saved Sep 22" } },
+    { "id": "x3", "part": "cross", "voice": "af_heart", "text": "Two shelves. One idea." },
+
+    { "id": "j1", "part": "latest", "voice": "af_heart", "text": "And the newest thing on your shelf, saved yesterday." },
+    { "id": "q6", "part": "latest", "voice": "am_adam", "quote": true, "text": "Most planning tools start from the entire internet and work down. This one starts from the handful of things someone already decided were worth keeping.",
+      "source": { "who": "Farid Zeynalov", "title": "Curation-First Planning Tools", "site": "LinkedIn", "saved": "Saved Oct 1" } },
+    { "id": "j2", "part": "latest", "voice": "af_heart", "text": "Your library. On air." }
+  ]
+}

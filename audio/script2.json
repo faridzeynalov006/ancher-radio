@@ -1,0 +1,23 @@
+{
+  "_note": "Demo v2 (45s). Quotes verbatim from Farid's Ancher library; x2 is Ancher's agent answer (conversation 01a0fd39-b0b7-7ae2-a79c-bd87ec88b8bf). Host is a vintage British announcer, not af_heart.",
+  "segments": [
+    { "id": "c0", "part": "hook", "voice": "am_fenrir", "quote": true, "text": "You have to go out and get them.",
+      "card": { "site": "paulgraham.com", "saved": "Saved Sep 23", "title": "Do Things that Don't Scale", "who": "Paul Graham" } },
+    { "id": "h1", "part": "show", "voice": "bm_george", "text": "Good evening. You're tuned to First 100 Users." },
+    { "id": "q2", "part": "show", "voice": "am_fenrir", "quote": true, "text": "Right then, give me your laptop.",
+      "card": { "site": "paulgraham.com", "saved": "Saved Sep 23", "title": "Do Things that Don't Scale", "who": "Paul Graham, on Stripe" } },
+    { "id": "q3", "part": "show", "voice": "am_echo", "quote": true, "text": "How would you feel if you could no longer use the product?",
+      "card": { "site": "review.firstround.com", "saved": "Saved Sep 23", "title": "How Superhuman Built an Engine to Find Product Market Fit", "who": "Rahul Vohra" } },
+    { "id": "q4", "part": "cross", "voice": "am_fenrir", "quote": true, "text": "You should take extraordinary measures not just to acquire users, but also to make them happy.",
+      "card": { "site": "paulgraham.com", "saved": "First 100 Users", "title": "Do Things that Don't Scale", "who": "Paul Graham" } },
+    { "id": "q5", "part": "cross", "voice": "bf_emma", "quote": true, "text": "When you frame ninety percent around how your recipient benefits, they are much more likely to take action.",
+      "display": "When you frame 90% around how your recipient benefits, they are much more likely to take action.",
+      "card": { "site": "linkedin.com", "saved": "Product Stories", "title": "The Anatomy of a Great Cold Sales Pitch", "who": "Wes Kao" } },
+    { "id": "x1", "part": "cross", "voice": "bm_george", "text": "Two shelves. One idea." },
+    { "id": "x2", "part": "cross", "voice": "bm_george", "text": "You win people not by selling your big vision, but by the benefit one real person feels right now." },
+    { "id": "j1", "part": "latest", "voice": "bm_george", "text": "Just saved." },
+    { "id": "q6", "part": "latest", "voice": "bm_fable", "quote": true, "text": "This one starts from the handful of things someone already decided were worth keeping.",
+      "card": { "site": "linkedin.com", "saved": "Saved just now", "title": "Curation-First Planning Tools", "who": "Farid Zeynalov" } },
+    { "id": "e1", "part": "end", "voice": "bm_george", "text": "Your library. On air." }
+  ]
+}
