@@ -15,6 +15,15 @@
 
 ---
 
+## Next session: agreed ideas, not built yet (Oct 14)
+Farid tested v2 in his own browser: it "works much better". Agreed direction for the next session, in this order:
+1. **"New edition" button in the radio** (no terminal). serve.py gets an endpoint that runs the engine; the page shows progress ("Ancher is writing X…", "Voicing line 34/80…"). The old edition keeps playing and the new one swaps in when done. The key stays in .env and never reaches the browser. With no key, the button explains how to add one. A full edition takes about 20 minutes (Kokoro); unchanged scripts are already skipped.
+2. **UI polish, DOM only so fps is unaffected.** Subtitles and note cards are liked; keep them as they are. Add a "tonight's programme" list (click to tune), an episode progress bar, the station name shown large on arrival (dial labels are too small), "Open in Ancher" on the card or caption (source URL), a compact control bar with key hints behind "?", and a freshness line ("Edition of … · N new saves since").
+3. **Car / commute ("Take it on the road").** Export tonight's edition as one MP3 (~12 min, stations stitched with idents and static, a chapter per station) to AirDrop to the phone for CarPlay or Bluetooth. Later, pitch to the team: a private podcast feed per user, hosted by Ancher (GitHub Pages is public, so not suitable), subscribed once in Apple Podcasts and auto-downloaded. Skip the phone web page: iOS stops background audio in the browser.
+4. Still open: the first real run with an API key (live source only tested against a fake API), and checking Ancher credit cost per agent request (check the balance before and after).
+
+**Costs, as explained to Farid:** with the default voice, Ancher credits are used only for the agent writing shows (~6 requests per edition: 4 stations, crossover, bulletin). Reading the library is free. Voicing is local Kokoro: free, no Claude tokens. voice=ancher adds Ancher podcast credits. Claude tokens are never used at runtime. The current snapshot edition was written by Claude calling Ancher's ask through MCP (~6 agent requests on his account).
+
 
 A mid-century table radio built entirely in code (Three.js r186, no models, no image files). The stations on the dial are Farid's real Ancher collections. Idea: turn the dial and Ancher plays a show made from that collection.
 
