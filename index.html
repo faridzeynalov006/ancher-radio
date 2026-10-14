@@ -8,37 +8,119 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&family=Manrope:wght@400;500;600;700&display=block" rel="stylesheet" />
   <style>
-    :root { --bg: #0f0e0c; --ink: #eeeeec; --muted: #8d8d86; --line: rgba(238, 238, 236, .14); --accent: #EB7514; }
+    :root {
+      --bg: #0f0e0c; --ink: #eeeeec; --muted: #8d8d86; --faint: #6d6a63; --line: rgba(238, 238, 236, .14);
+      --glass: rgba(20, 18, 15, .72); --accent: #EB7514;
+    }
     * { box-sizing: border-box; margin: 0; }
     html, body { height: 100%; background: var(--bg); overflow: hidden; }
     #stage canvas { display: block; }
+    button { font: inherit; color: inherit; }
+    a { color: inherit; }
 
+    /* ---- now playing (top left) ---- */
     .hud {
-      position: fixed; left: 28px; bottom: 24px; max-width: min(560px, calc(100vw - 56px)); color: var(--muted);
+      position: fixed; left: 28px; bottom: 24px; max-width: min(460px, calc(100vw - 56px)); color: var(--muted);
       font: 500 12px/1.6 Manrope, sans-serif; letter-spacing: 0.04em; transition: opacity .4s;
     }
+    body.live .hud { bottom: auto; top: 26px; }
     .hud b { color: var(--ink); font-weight: 600; }
     .hud .now { font: 400 22px/1.2 "Hedvig Letters Serif", serif; color: var(--ink); letter-spacing: 0; }
     .hud .now .dot { color: #5b544b; transition: color .4s; }
     body.on-air .hud .now .dot { color: var(--accent); }
-    .hud .episode { font: 400 15px/1.4 "Hedvig Letters Serif", serif; color: #c9c4ba; letter-spacing: 0; margin: 4px 0 12px; min-height: 1.4em; }
+    .hud .episode { font: 400 15px/1.4 "Hedvig Letters Serif", serif; color: #c9c4ba; letter-spacing: 0; margin: 4px 0 10px; min-height: 1.4em; }
     .hud .keys { pointer-events: none; }
-    .hud .edition { margin-top: 6px; color: #6d6a63; }
-    body.clean .hud, body.clean .caption { opacity: 0; }
+    .hud .edition { margin-top: 10px; color: var(--faint); }
+    .hud .edition .new { color: #d9a46f; }
 
-    .controls { display: none; gap: 6px; align-items: center; margin-bottom: 10px; }
+    .progress { display: none; align-items: center; gap: 10px; margin: -2px 0 12px; font: 500 11px/1 Manrope, sans-serif; color: var(--faint); font-variant-numeric: tabular-nums; }
+    body.playing .progress { display: flex; }
+    .progress .track { position: relative; flex: 0 1 260px; height: 2px; background: rgba(238, 238, 236, .14); border-radius: 2px; overflow: hidden; }
+    .progress .fill { position: absolute; inset: 0; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+
+    .controls { display: none; gap: 6px; align-items: center; flex-wrap: wrap; }
     body.live .controls { display: flex; }
-    .controls button {
-      font: 600 12px/1 Manrope, sans-serif; letter-spacing: .04em; color: var(--ink); background: rgba(20, 18, 15, .72);
+    .controls button, .btn {
+      font: 600 12px/1 Manrope, sans-serif; letter-spacing: .04em; color: var(--ink); background: var(--glass);
       border: 1px solid var(--line); border-radius: 999px; height: 32px; min-width: 32px; padding: 0 12px; cursor: pointer;
-      backdrop-filter: blur(6px); transition: border-color .2s, color .2s;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: border-color .2s, color .2s, background .2s;
     }
-    .controls button:hover { border-color: rgba(235, 117, 20, .7); }
+    .controls button:hover, .btn:hover { border-color: rgba(235, 117, 20, .7); }
+    .controls button:focus-visible, .btn:focus-visible, .prog-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     .controls button.off { color: var(--muted); }
-    .controls .vol { color: var(--muted); padding: 0 4px; min-width: 2ch; text-align: center; }
+    .controls .sep { width: 1px; height: 18px; background: var(--line); margin: 0 4px; }
+    .controls .vol { color: var(--muted); padding: 0 2px; min-width: 2ch; text-align: center; font-variant-numeric: tabular-nums; }
+    .controls .power svg { width: 13px; height: 13px; display: block; }
+    body.on-air .controls .power { color: var(--accent); border-color: rgba(235, 117, 20, .55); }
+    .controls .prog-toggle { display: none; }
 
+    .hints {
+      position: absolute; left: 0; top: calc(100% + 8px); width: 280px; padding: 14px 16px; border-radius: 12px; background: rgba(16, 15, 13, .92);
+      border: 1px solid var(--line); color: var(--muted); font: 500 12px/1.9 Manrope, sans-serif; letter-spacing: .02em;
+      opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity .2s, transform .2s; z-index: 5;
+    }
+    .hints.show { opacity: 1; transform: none; pointer-events: auto; }
+    .hints dl { display: grid; grid-template-columns: 88px 1fr; }
+    .hints dt { color: var(--ink); font-weight: 600; }
+    .controls-wrap { position: relative; }
+
+    /* ---- big station name when the needle lands ---- */
+    .arrival {
+      position: fixed; left: 50%; top: 9vh; transform: translate(-50%, 6px); text-align: center; pointer-events: none;
+      opacity: 0; transition: opacity .6s, transform .6s; width: min(620px, calc(100vw - 48px));
+    }
+    .arrival.show { opacity: 1; transform: translate(-50%, 0); }
+    .arrival .kicker { font: 600 11px/1 Manrope, sans-serif; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); }
+    .arrival .name { margin-top: 12px; font: 400 clamp(30px, 3.9vw, 54px)/1.08 "Hedvig Letters Serif", serif; color: #f4efe6; text-shadow: 0 2px 30px rgba(0, 0, 0, .6); }
+
+    /* ---- tonight's programme (top right) ---- */
+    .programme {
+      position: fixed; right: 24px; top: 24px; width: 320px; max-height: calc(100vh - 48px); display: none; flex-direction: column;
+      background: rgba(18, 16, 14, .66); border: 1px solid var(--line); border-radius: 16px; color: var(--ink);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font: 500 12px/1.4 Manrope, sans-serif; transition: opacity .4s;
+    }
+    body.live .programme { display: flex; }
+    .programme header { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 14px 16px 10px; cursor: pointer; user-select: none; }
+    .programme h2 { font: 400 17px/1.2 "Hedvig Letters Serif", serif; letter-spacing: 0; }
+    .programme header .meta { color: var(--faint); font-size: 11px; letter-spacing: .04em; white-space: nowrap; }
+    .programme header .chev { color: var(--muted); transition: transform .25s; display: inline-block; margin-left: 6px; }
+    body.prog-collapsed .programme header .chev { transform: rotate(-90deg); }
+    body.prog-collapsed .programme .body { display: none; }
+    .programme .body { display: flex; flex-direction: column; min-height: 0; }
+    .prog-list { list-style: none; padding: 0 8px; margin: 0; overflow-y: auto; min-height: 0; }
+    .prog-item {
+      display: grid; grid-template-columns: 10px 1fr auto; gap: 2px 10px; align-items: baseline; width: 100%; text-align: left;
+      padding: 9px 10px; border-radius: 10px; border: 0; background: transparent; cursor: pointer; transition: background .2s;
+    }
+    .prog-item:hover { background: rgba(238, 238, 236, .06); }
+    .prog-item .swatch { width: 8px; height: 8px; border-radius: 50%; align-self: center; grid-row: 1; }
+    .prog-item .label { font: 600 13px/1.3 Manrope, sans-serif; color: var(--ink); letter-spacing: .01em; }
+    .prog-item .dur { color: var(--faint); font-size: 11px; font-variant-numeric: tabular-nums; }
+    .prog-item .title { grid-column: 2 / 4; color: var(--muted); font: 400 13px/1.35 "Hedvig Letters Serif", serif; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .prog-item.quiet .label, .prog-item.quiet .title { color: var(--faint); }
+    .prog-item.current { background: rgba(235, 117, 20, .12); }
+    .prog-item.current .dur { color: var(--accent); }
+    .prog-item.sub .label { font-weight: 500; color: #d9a46f; }
+
+    .prog-actions { display: flex; gap: 8px; padding: 12px 16px 6px; border-top: 1px solid var(--line); margin-top: 8px; }
+    .prog-actions .btn { flex: 1; height: 34px; padding: 0 10px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; white-space: nowrap; }
+    .prog-actions .btn svg { width: 13px; height: 13px; flex: none; }
+    .prog-actions .btn[disabled] { opacity: .55; cursor: default; }
+    .prog-status { padding: 6px 16px 14px; color: var(--muted); font-size: 11.5px; line-height: 1.5; min-height: 8px; }
+    .prog-status:empty { padding-bottom: 8px; }
+    .prog-status .bar { height: 2px; background: rgba(238, 238, 236, .14); border-radius: 2px; overflow: hidden; margin: 8px 0 2px; }
+    .prog-status .bar i { display: block; height: 100%; background: var(--accent); transition: width .6s; }
+    .prog-status code { font: 500 11px/1.4 ui-monospace, Menlo, monospace; color: var(--ink); background: rgba(238, 238, 236, .08); padding: 1px 5px; border-radius: 4px; }
+    .prog-status ol { padding-left: 18px; margin: 4px 0; }
+    .prog-status .row { display: flex; gap: 8px; margin-top: 8px; }
+    .prog-status .row .btn { height: 30px; font-size: 11.5px; }
+    .prog-status .row .btn.primary { border-color: rgba(235, 117, 20, .7); }
+    .prog-status a.dl { color: var(--accent); font-weight: 600; text-decoration: none; }
+    body.no-server .prog-actions, body.no-server .prog-status { display: none; }
+
+    /* ---- captions ---- */
     .caption {
-      position: fixed; left: 50%; bottom: 34px; transform: translate(-50%, 8px); width: min(760px, calc(100vw - 48px));
+      position: fixed; left: 50%; bottom: 34px; transform: translate(-50%, 8px); width: min(720px, calc(100vw - 420px));
       text-align: center; opacity: 0; transition: opacity .35s, transform .35s; pointer-events: none;
     }
     .caption.show { opacity: 1; transform: translate(-50%, 0); }
@@ -48,23 +130,52 @@
     }
     .caption.quote .text { font: 400 22px/1.45 "Hedvig Letters Serif", serif; color: #f4efe6; }
     .caption .who { margin-top: 8px; font: 600 12px/1 Manrope, sans-serif; letter-spacing: .06em; color: var(--accent); text-transform: uppercase; min-height: 12px; }
-    body.live .hud { bottom: auto; top: 26px; }
+    .caption .who a { pointer-events: auto; color: #d9a46f; text-decoration: none; margin-left: 10px; letter-spacing: .04em; border-bottom: 1px solid rgba(217, 164, 111, .4); }
+    .caption .who a:hover { color: var(--ink); border-color: var(--ink); }
+    .caption:not(.show) .who a { pointer-events: none; }
+
+    body.clean .hud, body.clean .caption, body.clean .programme, body.clean .arrival { opacity: 0; pointer-events: none; }
+    body.clean .caption .who a { pointer-events: none; }
 
     .prompt {
       position: fixed; left: 50%; bottom: 46px; transform: translateX(-50%); padding: 12px 20px; border-radius: 999px;
-      font: 500 14px/1 Manrope, sans-serif; letter-spacing: .03em; color: var(--ink); background: rgba(20, 18, 15, .72);
+      font: 500 14px/1 Manrope, sans-serif; letter-spacing: .03em; color: var(--ink); background: var(--glass);
       border: 1px solid rgba(235, 117, 20, .45); opacity: 0; transition: opacity .4s; pointer-events: none;
     }
     .prompt.show { opacity: 1; animation: breathe 2.6s ease-in-out infinite; }
     @keyframes breathe { 50% { border-color: rgba(235, 117, 20, .9); } }
 
-    .fps { position: fixed; right: 16px; top: 12px; color: var(--muted); font: 500 11px/1 Manrope, sans-serif; letter-spacing: .04em; }
+    .fps { position: fixed; right: 16px; bottom: 12px; color: var(--muted); font: 500 11px/1 Manrope, sans-serif; letter-spacing: .04em; }
 
+    /* the radio slides left while the programme is docked (main.js); the text over it follows */
+    .caption, .arrival, .prompt { transition-property: opacity, transform, left; }
+    @media (min-width: 861px) {
+      body.live:not(.prog-collapsed):not(.clean) :is(.caption, .arrival, .prompt) { left: calc(50% - 172px); }
+    }
+    @media (max-width: 1100px) {
+      .programme { width: 280px; }
+      .arrival { top: 14vh; }
+    }
+    @media (min-width: 861px) and (max-width: 1100px) {
+      body.live:not(.prog-collapsed):not(.clean) :is(.caption, .arrival, .prompt) { left: calc(50% - 152px); }
+    }
+    @media (max-width: 860px) {
+      .hud { left: 16px; top: 16px !important; max-width: calc(100vw - 32px); }
+      .controls .prog-toggle { display: inline-block; }
+      .programme {
+        left: 12px; right: 12px; top: auto; bottom: 12px; width: auto; max-height: 62vh; z-index: 6;
+        opacity: 0; pointer-events: none; transform: translateY(12px); transition: opacity .3s, transform .3s; background: rgba(18, 16, 14, .94);
+      }
+      body.prog-open .programme { opacity: 1; pointer-events: auto; transform: none; }
+      body.prog-collapsed .programme .body { display: flex; }
+      .programme header .chev { display: none; }
+      .arrival { top: auto; bottom: 30vh; }
+      .caption { width: calc(100vw - 32px); }
+    }
     @media (max-width: 640px) {
-      .hud { left: 16px; top: 16px; max-width: calc(100vw - 32px); }
-      .hud .keys { display: none; }
       .caption .text, .caption.quote .text { font-size: 17px; }
       .prompt { white-space: nowrap; font-size: 13px; }
+      .hints { width: min(280px, calc(100vw - 32px)); }
     }
   </style>
   <script type="importmap">
@@ -79,16 +190,51 @@
   <div class="hud">
     <div class="now"><span class="dot">&#9679;</span> <span id="station">Off</span></div>
     <div class="episode" id="episode"></div>
-    <div class="controls">
-      <button id="btn-power" title="Power (space)">Power</button>
-      <button id="btn-prev" title="Previous station (←)">‹</button>
-      <button id="btn-next" title="Next station (→)">›</button>
-      <button id="btn-vol-down" title="Volume down (↓)">−</button><span class="vol" id="vol">8</span><button id="btn-vol-up" title="Volume up (↑)">+</button>
-      <button id="btn-cc" title="Captions (C)">CC</button>
+    <div class="progress"><div class="track"><div class="fill" id="progress-fill"></div></div><span id="progress-time"></span></div>
+    <div class="controls-wrap">
+      <div class="controls">
+        <button id="btn-power" class="power" title="Power (space)" aria-label="Power"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M8 1.8v5.6"/><path d="M4.4 4.1a5.4 5.4 0 1 0 7.2 0"/></svg></button>
+        <button id="btn-prev" title="Previous station (←)" aria-label="Previous station">‹</button>
+        <button id="btn-next" title="Next station (→)" aria-label="Next station">›</button>
+        <span class="sep"></span>
+        <button id="btn-vol-down" title="Volume down (↓)" aria-label="Volume down">−</button><span class="vol" id="vol">8</span><button id="btn-vol-up" title="Volume up (↑)" aria-label="Volume up">+</button>
+        <span class="sep"></span>
+        <button id="btn-cc" title="Captions (C)">CC</button>
+        <button id="btn-prog" class="prog-toggle" title="Tonight's programme (P)">Programme</button>
+        <button id="btn-hints" title="Keys (?)" aria-label="Keyboard shortcuts" aria-expanded="false">?</button>
+      </div>
+      <div class="hints" id="hints" role="dialog" aria-label="Keyboard shortcuts">
+        <dl>
+          <dt>click, space</dt><dd>power on and off</dd>
+          <dt>← →</dt><dd>tune to the previous / next station</dd>
+          <dt>↑ ↓</dt><dd>volume</dd>
+          <dt>C</dt><dd>captions</dd>
+          <dt>P</dt><dd>tonight's programme</dd>
+          <dt>1–5</dt><dd>cameras (now: <span id="shot">Hero</span>)</dd>
+          <dt>A</dt><dd>camera follows the show</dd>
+          <dt>drag</dt><dd>orbit the radio</dd>
+          <dt>H</dt><dd>hide all text</dd>
+        </dl>
+      </div>
     </div>
-    <div class="keys">Shot <b id="shot">Hero</b> &nbsp;·&nbsp; 1–5 cameras &nbsp;·&nbsp; A auto camera &nbsp;·&nbsp; drag to orbit &nbsp;·&nbsp; ← → tune &nbsp;·&nbsp; space power &nbsp;·&nbsp; H hide</div>
     <div class="edition" id="edition"></div>
   </div>
+
+  <aside class="programme" id="programme" aria-label="Tonight's programme">
+    <header id="prog-header"><h2>Tonight&rsquo;s programme<span class="chev">&#9662;</span></h2><span class="meta" id="prog-meta"></span></header>
+    <div class="body">
+      <ol class="prog-list" id="prog-list"></ol>
+      <div class="prog-actions">
+        <button class="btn" id="btn-edition" title="Ancher writes tonight's shows from your latest saves">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9"/><path d="M13.6 2.2v3.2h-3.2"/></svg>New edition</button>
+        <button class="btn" id="btn-road" title="Download tonight's edition as one MP3, a chapter per station">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8.5"/><path d="M4.5 7.2 8 10.7l3.5-3.5"/><path d="M2.5 13.5h11"/></svg>Take it on the road</button>
+      </div>
+      <div class="prog-status" id="prog-status" aria-live="polite"></div>
+    </div>
+  </aside>
+
+  <div class="arrival" id="arrival" aria-hidden="true"><div class="kicker" id="arrival-kicker">Now tuned to</div><div class="name" id="arrival-name"></div></div>
   <div class="caption" id="caption"><span class="text" id="caption-text"></span><div class="who" id="caption-who"></div></div>
   <div class="prompt" id="prompt">Click the radio or press space to switch it on</div>
   <script type="module" src="./src/main.js"></script>

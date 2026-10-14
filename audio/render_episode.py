@@ -53,7 +53,8 @@ def main(script_path, out_dir):
     tmp = tempfile.mkdtemp(prefix='radio-')
 
     clips = []
-    for seg in spec['segments']:
+    total_lines = len(spec['segments'])
+    for n, seg in enumerate(spec['segments'], 1):
         voice = seg['voice']
         lang = 'en-gb' if voice.startswith('b') else 'en-us'
         audio, sr = k.create(seg['speak'], voice=voice, speed=seg.get('speed', 0.95), lang=lang)
@@ -62,7 +63,7 @@ def main(script_path, out_dir):
         x = trim(load(raw, QUOTE_FX if seg['kind'] == 'quote' else HOST_FX))
         x = x / (np.sqrt(np.mean(x ** 2)) + 1e-9) * 0.11  # level-match every voice
         clips.append((seg, x))
-        print(f"  voiced {seg['id']} ({seg['kind']}, {voice}) {len(x) / SR:.1f}s", flush=True)
+        print(f"  voiced {seg['id']} ({n}/{total_lines}, {seg['kind']}, {voice}) {len(x) / SR:.1f}s", flush=True)
 
     # lay the segments end to end
     timing, t, prev = [], LEAD_IN, None
@@ -102,3 +103,7 @@ def main(script_path, out_dir):
 
 if __name__ == '__main__':
     main(sys.argv[1], sys.argv[2])
+    # Everything is written. Exit without the interpreter's teardown: onnxruntime (under Kokoro) can
+    # abort with "recursive_mutex lock failed" while shutting down, which would read as a failed episode.
+    sys.stdout.flush()
+    os._exit(0)

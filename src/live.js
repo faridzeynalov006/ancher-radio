@@ -28,7 +28,8 @@ export async function loadEdition(bases = ['edition/', 'demo-edition/']) {
     if (r?.ok) {
       const ep = await r.json();
       const dir = k.slice(0, k.lastIndexOf('/') + 1);
-      episodes[k] = { ...ep, url: ep.audio ? base + dir + ep.audio : null };
+      // the build date in the URL, so a new edition's audio is never mistaken for the old one
+      episodes[k] = { ...ep, url: ep.audio ? `${base}${dir}${ep.audio}?v=${encodeURIComponent(edition.builtAt || '')}` : null };
     }
   }));
   return { ...edition, episodes, demo: base.startsWith('demo') };
@@ -60,7 +61,7 @@ const fmtSaved = (d) => {
 export function createLive({ radio, needle, setPower, frameShot, SHOTS, ui }) {
   const player = createPlayer();
   const cards = createCards(radio);
-  let edition = null, channels = [], markers = [];
+  let edition = null, channels = [], markers = [], pending = null;
   let on = false, index = 0, tuneToken = 0, arrived = false, autoCam = true, captionsOn = true;
   let lastShot = null, threadT = 0, dialKey = '';
   const saved = new Map(); // channel index -> resume position
@@ -92,7 +93,40 @@ export function createLive({ radio, needle, setPower, frameShot, SHOTS, ui }) {
   function showNowPlaying() {
     const c = channel(), ep = episode();
     ui.station(on ? (c?.kind === 'station' ? c.station.name : c?.label) || '' : 'Off');
-    ui.title(on && arrived ? ep?.title || (c?.kind === 'station' && !c.station.onAir ? quietLine(c.station) : '') : '');
+    ui.title(on && arrived ? (ep?.title ? withoutName(ep.title, c) : c?.kind === 'station' && !c.station.onAir ? quietLine(c.station) : '') : '');
+    ui.programme(programme(), index, on);
+  }
+
+  // "First 100 Users: The Quiet Art…" reads as "The Quiet Art…" under the station's own name
+  const withoutName = (title, c) => {
+    const names = [c.station?.name, c.label, 'Just Saved'].filter(Boolean).map((n) => n.toLowerCase());
+    const m = title.match(/^(.+?)\s*(?:—|–|:| - )\s*(.+)$/);
+    return m && names.includes(m[1].trim().toLowerCase()) ? m[2] : title;
+  };
+
+  // tonight's programme, in dial order
+  function programme() {
+    return channels.map((c, i) => {
+      const ep = c.episodeKey ? edition.episodes[c.episodeKey] : null;
+      const quiet = !ep?.url;
+      return {
+        index: i, label: c.kind === 'crossover' ? `Crossover: ${c.a.label} × ${c.b.label}` : c.label, color: c.color,
+        title: ep?.title ? withoutName(ep.title, c) : c.kind === 'station' && !c.station.onAir ? quietLine(c.station) : 'Nothing on this station yet',
+        duration: ep?.duration || 0, quiet, sub: c.kind === 'crossover',
+      };
+    });
+  }
+
+  // A freshly built edition replaces the old one between stations, never in the middle of a show.
+  function applyEdition(next, targetLabel = channel()?.label) {
+    edition = next;
+    ({ channels, markers } = buildChannels(edition));
+    saved.clear();
+    const same = channels.findIndex((c) => c.label === targetLabel);
+    index = same >= 0 ? same : Math.max(0, channels.findIndex((c) => c.kind === 'station' && c.episodeKey));
+    ui.edition(edition);
+    dialKey = '';
+    drawDial();
   }
 
   const quietLine = (s) => `Quiet tonight: ${s.noteCount} ${s.noteCount === 1 ? 'note' : 'notes'} on this shelf, not enough for a show yet.`;
@@ -102,9 +136,14 @@ export function createLive({ radio, needle, setPower, frameShot, SHOTS, ui }) {
     const prev = player.stop();
     if (prev && !first) saved.set(index, prev.position);
     const token = ++tuneToken;
+    if (pending) {
+      const target = channels[(i + channels.length) % channels.length]?.label;
+      applyEdition(pending, target); pending = null;
+      i = index;
+    }
     index = (i + channels.length) % channels.length;
     arrived = false; threadT = 0;
-    clearCards(); ui.caption(null);
+    clearCards(); ui.caption(null); ui.progress(null); ui.leave();
     player.setProgram(0, 0.15);
     player.setStatic(BETWEEN, 0.2);
     if (!first) player.play('ratchet', 0.35);
@@ -116,6 +155,8 @@ export function createLive({ radio, needle, setPower, frameShot, SHOTS, ui }) {
     if (token !== tuneToken || !on) return;
     arrived = true;
     showNowPlaying();
+    const c = channel();
+    ui.arrive(c.kind === 'crossover' ? 'The crossover' : c.kind === 'bulletin' ? 'Your newest save' : 'Now tuned to', c.kind === 'crossover' ? `${c.a.label} × ${c.b.label}` : c.label);
     if (!ep?.url) { player.setStatic(0.1, 0.6); return; }
     const from = saved.get(index) || 0;
     await player.start(ep.url, from, () => onEnded(token));
@@ -150,7 +191,8 @@ export function createLive({ radio, needle, setPower, frameShot, SHOTS, ui }) {
       player.setProgram(0, 0.2); player.setStatic(0, 0.35);
       setPower(false);
       needle.go(REST, 1.6);
-      clearCards(); ui.caption(null); showNowPlaying(); ui.prompt(true);
+      clearCards(); ui.caption(null); ui.progress(null); ui.leave(); showNowPlaying(); ui.prompt(true);
+      if (pending) { applyEdition(pending); pending = null; showNowPlaying(); }
       setTimeout(() => { if (!on) player.suspend(); }, 700);
     }
     drawDial();
@@ -181,17 +223,32 @@ export function createLive({ radio, needle, setPower, frameShot, SHOTS, ui }) {
     player,
 
     async load() {
-      edition = await loadEdition();
-      if (!edition) { ui.missing(); return false; }
-      ({ channels, markers } = buildChannels(edition));
-      index = Math.max(0, channels.findIndex((c) => c.kind === 'station' && c.episodeKey));
-      ui.edition(edition);
-      dialKey = '';
-      drawDial();
+      const ed = await loadEdition();
+      if (!ed) { ui.missing(); return false; }
+      applyEdition(ed, null);
+      showNowPlaying();
       return true;
     },
 
+    // a new edition was just built: swap it in now if nothing is playing, otherwise at the next tune
+    async reload() {
+      const ed = await loadEdition();
+      if (!ed) return false;
+      if (on && arrived && player.playing) { pending = ed; return true; }
+      if (!on) { applyEdition(ed); showNowPlaying(); return true; }
+      applyEdition(ed); tune(index, { first: true });
+      return true;
+    },
+
+    get playing() { return on && player.playing; },
+    // how many shows the engine writes per edition (stations on air, the crossover, the bulletin)
+    get showCount() { return edition ? edition.stations.filter((s) => s.onAir).length + 2 : 0; },
+
     power,
+    async tuneTo(i) {
+      if (!on) { index = i; await power(true); return; }
+      if (i !== index || !arrived) tune(i);
+    },
     next() { if (on) tune(index + 1); },
     prev() { if (on) tune(index - 1); },
     toggleCaptions() { captionsOn = !captionsOn; ui.caption(null); return captionsOn; },
@@ -208,6 +265,7 @@ export function createLive({ radio, needle, setPower, frameShot, SHOTS, ui }) {
       const pos = player.playing ? player.position() : -1;
       const seg = pos >= 0 ? segmentAt(ep, pos) : null;
       if (captionsOn) ui.caption(seg && arrived ? seg : null);
+      ui.progress(on && arrived && pos >= 0 ? pos : null, player.duration || ep?.duration || 0);
 
       // note cards rise from the speaker while a saved passage plays
       if (ep && pos >= 0) {

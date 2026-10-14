@@ -15,6 +15,7 @@ import { STATIONS as DIAL_STATIONS, STATIONS_7, NEW_STATION } from './textures.j
 import { MODE, QUALITY, SHOW_FPS, createAdaptiveResolution } from './quality.js';
 import { createLive } from './live.js';
 import { createUI } from './ui.js';
+import { createServerButtons } from './server.js';
 
 await Promise.all([
   document.fonts.load('400 64px "Hedvig Letters Serif"'),
@@ -244,6 +245,28 @@ addEventListener('keydown', (e) => {
   if (e.key === 'ArrowLeft' && powerTarget) tuneTo(stationIndex - 1);
 });
 
+// Live mode: while the programme panel is open, the radio slides left so the panel never covers it.
+let viewShift = 0, shiftTarget = 0;
+function measurePanel() {
+  const panel = document.getElementById('programme');
+  const b = document.body.classList;
+  const docked = b.contains('live') && !b.contains('clean') && !b.contains('prog-collapsed') && !matchMedia('(max-width: 860px)').matches;
+  shiftTarget = docked && panel ? (panel.offsetWidth + 24) / 2 : 0;
+}
+function applyShift() {
+  if (viewShift === 0) camera.clearViewOffset();
+  else camera.setViewOffset(innerWidth, innerHeight, viewShift, 0, innerWidth, innerHeight);
+}
+function frameBesidePanel(dt) {
+  if (viewShift === shiftTarget) return;
+  viewShift = Math.abs(shiftTarget - viewShift) < 0.25 ? shiftTarget : viewShift + (shiftTarget - viewShift) * Math.min(1, dt * 5);
+  applyShift();
+}
+if (MODE === 'live') {
+  new MutationObserver(measurePanel).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  measurePanel();
+}
+
 // ---------- loop ----------
 const clock = new THREE.Clock();
 let turntable = true;
@@ -253,8 +276,9 @@ frameShot(SHOTS[1], true);
 const ui = createUI();
 const live = MODE === 'live' ? createLive({ radio, needle, setPower, frameShot, SHOTS, ui }) : null;
 if (live) {
-  ui.bind({ power: () => live.power(), next: () => live.next(), prev: () => live.prev(), captions: () => ui.captionsToggled(live.toggleCaptions()), volume: (d) => live.volume(d) });
+  ui.bind({ power: () => live.power(), next: () => live.next(), prev: () => live.prev(), captions: () => ui.captionsToggled(live.toggleCaptions()), volume: (d) => live.volume(d), tuneTo: (i) => live.tuneTo(i) });
   live.load();
+  createServerButtons({ ui, getShows: () => live.showCount, onEditionReady: () => live.reload(), isPlaying: () => live.playing });
   window.__live = live; // for debugging in the console
 } else {
   setTimeout(() => setPower(true), 1400);
@@ -273,6 +297,7 @@ function tick() {
   const warming = powerTarget === 1 && power < 0.98;
   const wobble = warming ? (Math.sin(t * 23) * 0.5 + Math.sin(t * 37) * 0.5) * 0.06 * (1 - power) : 0;
   const level = live ? live.update(dt, t) : 0;
+  if (live) frameBesidePanel(dt);
   const glow = Math.max(0, THREE.MathUtils.smoothstep(power, 0, 1) + wobble);
   radio.mats.dial.emissiveIntensity = glow * 0.8;
   // the pilot lamp breathes with the voice; the dial stays steady
@@ -315,6 +340,7 @@ tick();
 addEventListener('resize', () => {
   camera.aspect = innerWidth / innerHeight;
   camera.updateProjectionMatrix();
+  if (MODE === 'live') { measurePanel(); applyShift(); }
   renderer.setSize(innerWidth, innerHeight);
   composer.setSize(innerWidth, innerHeight);
 });
@@ -344,6 +370,7 @@ window.__capture = async (name, w = 1920, h = 1080, overlay = null) => {
   renderer.setSize(w, h, false);
   composer.setPixelRatio(1);
   composer.setSize(w, h);
+  camera.clearViewOffset();
   camera.aspect = w / h; camera.updateProjectionMatrix();
   if (!orbiting) {
     computeDesired(clock.elapsedTime);
@@ -368,6 +395,7 @@ window.__capture = async (name, w = 1920, h = 1080, overlay = null) => {
   composer.setPixelRatio(prev[2]);
   composer.setSize(prev[0], prev[1]);
   camera.aspect = prev[0] / prev[1]; camera.updateProjectionMatrix();
+  if (MODE === 'live') applyShift();
   const r = await fetch('/save?name=' + encodeURIComponent(name), { method: 'POST', body: url });
   return r.status;
 };

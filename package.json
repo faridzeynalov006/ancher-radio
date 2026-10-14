@@ -9,6 +9,7 @@
     "edition": "node engine/build.js",
     "edition:replay": "node engine/build.js --replay",
     "edition:demo": "node engine/build.js --demo",
+    "road": "node engine/road.js",
     "test": "node --test engine/test/*.test.js"
   },
   "engines": {

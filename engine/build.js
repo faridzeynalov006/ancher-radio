@@ -5,7 +5,11 @@
 //   npm run edition -- --record        live, and saves every Ancher response to engine/fixtures
 //   npm run edition:replay             replays the recorded responses: no key, no network
 //   npm run edition:demo               rebuilds the public demo edition from engine/demo
-//   options: --only <station-slug>  --no-audio  --out <dir>  --voice host|ancher
+//   npm run edition -- --check         counts saves added since this edition (free: reads the library only)
+//   options: --only <station-slug>  --no-audio  --out <dir>  --voice host|ancher  --progress
+//
+// A build writes into edition.next/ and swaps it in only when it's finished, so the radio keeps
+// playing the old edition meanwhile and a failed build leaves it untouched.
 //
 // Nothing here runs on a schedule. It runs when someone types the command.
 import fs from 'node:fs';
@@ -25,12 +29,13 @@ const args = process.argv.slice(2);
 const flag = (name) => args.includes(`--${name}`);
 const option = (name) => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : null; };
 
-export async function buildEdition({ source, config, outDir = EDITION_DIR, only = null, audio = true, voice = config.voice, log = console.log }) {
+export async function buildEdition({ source, config, outDir = EDITION_DIR, only = null, audio = true, voice = config.voice, log = console.log, progress = () => {} }) {
   const started = Date.now();
   const previous = readJson(path.join(outDir, 'edition.json'));
   const lastBuilt = previous?.builtAt || null;
 
   log(`Ancher Radio: building an edition from ${source.kind === 'live' ? 'your live Ancher library' : 'recorded Ancher responses'}`);
+  progress({ stage: 'reading' });
   const collections = await source.listCollections();
   const notesBy = {};
   for (const c of collections.filter((c) => isStation(c, config))) notesBy[c.id] = await source.listCollectionNotes(c.id);
@@ -66,9 +71,15 @@ export async function buildEdition({ source, config, outDir = EDITION_DIR, only 
     });
   }
 
+  const labelOf = (slug) => stations.find((s) => s.slug === slug)?.label || slug;
+  for (const job of jobs) job.label = job.kind === 'crossover' ? job.between.map(labelOf).join(' × ') : job.kind === 'bulletin' ? 'Just Saved' : labelOf(job.station);
+  progress({ stage: 'planned', jobs: jobs.map(({ key, label }) => ({ key, label })) });
+
   const episodes = {};
-  for (const job of jobs) {
+  for (const [i, job] of jobs.entries()) {
     log(`\n${job.key}`);
+    const step = { key: job.key, label: job.label, i: i + 1, n: jobs.length };
+    progress({ stage: 'writing', ...step });
     let reply, parsed;
     try {
       reply = await source.ask(job.key, job.prompt);
@@ -76,12 +87,14 @@ export async function buildEdition({ source, config, outDir = EDITION_DIR, only 
     } catch (e) {
       // one bad station shouldn't sink the edition: keep its previous episode and move on
       log(`  skipped: ${e.message}`);
+      progress({ stage: 'skipped', ...step, reason: e.message });
       continue;
     }
     const { episode, report } = verifyEpisode(parsed, await corpusFor(job.notes));
     for (const r of report) log(`  ${r.ok ? (r.corrected ? '~' : '✓') : '✗'} "${r.text.slice(0, 70)}${r.text.length > 70 ? '…' : ''}"${r.ok ? (r.corrected ? ' (found in a different note)' : '') : ` dropped: ${r.reason}`}`);
     const dir = path.join(outDir, 'episodes', job.key);
     fs.mkdirSync(dir, { recursive: true });
+    progress({ stage: 'voicing', ...step, lines: episode.segments.length, kept: report.filter((r) => r.ok).length, quotes: report.length });
     const ep = await produceEpisode({ job, episode, report, dir, config, noteIndex, audio, voice, source, log });
     fs.writeFileSync(path.join(dir, 'episode.json'), JSON.stringify(ep, null, 2));
     episodes[job.key] = `episodes/${job.key}/episode.json`;
@@ -104,7 +117,8 @@ export async function buildEdition({ source, config, outDir = EDITION_DIR, only 
       : previous?.justSaved ?? null,
   };
   fs.writeFileSync(path.join(outDir, 'edition.json'), JSON.stringify(edition, null, 2));
-  log(`\nEdition written to ${path.relative(ROOT, outDir) || '.'}/edition.json in ${((Date.now() - started) / 1000).toFixed(0)}s`);
+  log(`\nEdition written to ${path.relative(ROOT, outDir).replace(/\.next$/, '') || '.'}/edition.json in ${((Date.now() - started) / 1000).toFixed(0)}s`);
+  progress({ stage: 'built', builtAt: edition.builtAt, episodes: Object.keys(episodes).length });
   return edition;
 }
 
@@ -171,6 +185,39 @@ function domainOf(url) {
   try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return ''; }
 }
 
+// Builds into <dir>.next (a copy of the current edition, so unchanged episodes keep their audio)
+// and swaps it in only once the whole edition is done.
+export async function buildStaged(outDir, build) {
+  const next = `${outDir}.next`, old = `${outDir}.old`;
+  fs.rmSync(next, { recursive: true, force: true });
+  if (fs.existsSync(outDir)) fs.cpSync(outDir, next, { recursive: true });
+  try {
+    const edition = await build(next);
+    fs.rmSync(old, { recursive: true, force: true });
+    if (fs.existsSync(outDir)) fs.renameSync(outDir, old);
+    fs.renameSync(next, outDir);
+    fs.rmSync(old, { recursive: true, force: true });
+    return edition;
+  } catch (e) {
+    fs.rmSync(next, { recursive: true, force: true });
+    throw e;
+  }
+}
+
+// How many ready notes on your stations were saved after this edition was built. Reads the library only (free).
+export async function newSavesSince({ source, config, outDir = EDITION_DIR }) {
+  const edition = readJson(path.join(outDir, 'edition.json'));
+  const since = edition?.builtAt ? Date.parse(edition.builtAt) : 0;
+  const collections = await source.listCollections();
+  const fresh = new Map();
+  for (const c of collections.filter((c) => isStation(c, config))) {
+    for (const n of await source.listCollectionNotes(c.id)) {
+      if (n.status === 'ready' && Date.parse(n.created_at) > since) fresh.set(n.id, n.title || 'Untitled');
+    }
+  }
+  return { builtAt: edition?.builtAt || null, newSince: fresh.size, titles: [...fresh.values()].slice(0, 5) };
+}
+
 function readJson(file) {
   try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return null; }
 }
@@ -186,6 +233,9 @@ async function main() {
   } else if (config.apiKey) {
     const { createLiveSource } = await import('./sources/live.js');
     source = createLiveSource({ apiKey: config.apiKey, baseUrl: config.baseUrl, record: flag('record') });
+  } else if (flag('check')) {
+    console.log(JSON.stringify({ error: 'no-key' }));
+    return;
   } else {
     console.log(`No ANCHER_API_KEY found, so nothing was changed.
 The radio keeps playing the saved edition in edition/.
@@ -198,13 +248,19 @@ To build a fresh edition from your live library:
 To rebuild from the recorded responses instead (no key needed):  npm run edition:replay`);
     return;
   }
-  await buildEdition({
-    source, config,
-    outDir: option('out') ? path.resolve(option('out')) : flag('demo') ? DEMO_EDITION_DIR : EDITION_DIR,
+  if (flag('check')) {
+    console.log(JSON.stringify(await newSavesSince({ source, config })));
+    return;
+  }
+  // --progress: one machine-readable line per step, for the radio's "New edition" button (serve.py)
+  const progress = flag('progress') ? (e) => console.log(`@@progress ${JSON.stringify(e)}`) : undefined;
+  const outDir = option('out') ? path.resolve(option('out')) : flag('demo') ? DEMO_EDITION_DIR : EDITION_DIR;
+  await buildStaged(outDir, (dir) => buildEdition({
+    source, config, outDir: dir, progress,
     only: option('only'),
     audio: !flag('no-audio'),
     voice: option('voice') || config.voice,
-  });
+  }));
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

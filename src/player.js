@@ -137,6 +137,7 @@ export function createPlayer() {
     },
 
     get playing() { return !!current && !current.ended; },
+    get duration() { return current?.duration || 0; },
 
     // Loudness of the programme right now (0..1), for the valve glow.
     level() {

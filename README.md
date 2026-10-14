@@ -29,10 +29,14 @@ Open http://localhost:8140, then **click the radio or press space** to switch it
 | ← → | tune to the previous / next station |
 | ↑ ↓ | volume |
 | C | captions on/off |
+| P | show or hide tonight's programme (click a show to tune to it) |
+| ? | the key list |
 | 1–5 | camera shots (hero, dial, knob, speaker, profile) |
 | A | let the camera follow the show again |
 | drag | orbit the radio |
 | H | hide the on-screen text |
+
+The panel on the right is **tonight's programme**: every show in dial order with its length. Click one to tune straight to it. While a show plays you get a progress bar, captions, and under each quote a link to the original you saved.
 
 A fresh clone plays the **demo edition** (`demo-edition/`): three stations built from a real Ancher library (First 100 Users, Design & Motion, Product Stories) and their crossover. Once you build your own edition it plays yours instead.
 
@@ -44,13 +48,13 @@ A fresh clone plays the **demo edition** (`demo-edition/`): three stations built
    ANCHER_API_KEY=your-key
    ```
 3. Set up the free local voices once (see "Voices" below).
-4. Run:
-   ```bash
-   npm run edition
-   ```
-5. Reload the radio. Your collections are now the stations.
+4. Press **New edition** in the radio's programme panel (or run `npm run edition` in a terminal).
 
-Nothing runs on its own: no schedule, no background process. A new edition is made when someone types the command. Without a key, `npm run edition` changes nothing and explains how to add one.
+The radio keeps playing while the new edition is made. The panel shows the progress ("Ancher is writing First 100 Users…", "Voicing First 100 Users: line 12 of 18"). When it's finished, the new edition starts with the next station you tune to. The engine builds into `edition.next/` and swaps it in only when everything worked, so a failed build leaves the old edition playing. Once a key is set, the edition line under the controls also says how many saves you've added since (counting reads your library, which is free).
+
+**What it costs:** Ancher credits only for the agent writing the shows, about one per show (6 for an edition with 4 stations, a crossover and a bulletin). The voices run on your computer and are free. The key stays in `.env`; the browser never sees it.
+
+Nothing runs on its own: no schedule, no background process. A new edition is made when someone presses the button or types the command. Without a key, the button and `npm run edition` change nothing and explain how to add one. To try the button without a key, start the server with `RADIO_SOURCE=replay npm start`: it rebuilds from the recorded responses.
 
 `npm run edition -- --record` also saves every Ancher response under `engine/fixtures/`, so the same edition can be rebuilt later without a key (`npm run edition:replay`).
 
@@ -82,18 +86,23 @@ You also need `ffmpeg` (`brew install ffmpeg`). Voicing takes 10–15 seconds pe
 
 **Ancher's own voice instead:** `npm run edition -- --voice ancher` (or `"voice": "ancher"` in `radio.config.json`) hands each script to Ancher's podcast engine. The episode is saved as a note in your `Radio` collection and voiced by Ancher. You get no custom radio sound, and the transcript drives the captions.
 
+## Take it on the road
+
+**Take it on the road** (in the programme panel, or `npm run road`) turns tonight's edition into one MP3: every show in dial order, a few seconds of tuning static between them, a chapter per show, and the radio as cover art. About 12 minutes, saved in `exports/`. AirDrop it to your phone or drag it into the Music app, then play it in the car over CarPlay or Bluetooth. It only uses the files already in the edition: no credits, no network.
+
 ## Tests
 
 ```bash
 npm test
 ```
 
-20 tests, no key and no network needed:
+23 tests, no key and no network needed:
 
 - **Live connection**: the live source runs against a fake Ancher API. It checks Bearer auth, paging, file downloads through minted links, caption cleanup, and that a draft Ancher's reviewer rejected is dropped.
 - **Replay**: the demo edition rebuilds from the recorded responses, and every quote verifies.
 - **Misquote**: a planted misquote is caught and dropped.
 - **No key**: without a key, the engine changes nothing.
+- **Road export and safe swap**: the MP3's running order matches the dial, and a failed build leaves the playing edition untouched.
 - **Unit tests**: quote checking, speech cleanup, station planning and reply parsing.
 
 ## How the radio is built
@@ -108,9 +117,11 @@ npm test
 | `src/main.js` | Scene, lights, bloom, vignette, camera shots, power and needle, the render loop, film-rendering hooks. |
 | `src/live.js` | Live mode: loads the edition, lays out the dial, tuning, static, note cards, the camera following the show. |
 | `src/player.js` | The sound (Web Audio): episodes, static between stations, knob and switch sounds. |
-| `src/ui.js`, `index.html` | Now playing, captions and controls. |
+| `src/ui.js`, `index.html` | Now playing, the programme, progress bar, captions and controls (plain HTML, so they never cost the 3D scene a frame). |
+| `src/server.js` | The "New edition" and "Take it on the road" buttons. They hide themselves when the page is served without `serve.py`. |
 | `src/quality.js` | Live and film quality modes (below). |
-| `serve.py` | Local server (no caching, so changes show up on reload), plus frame saving for film renders. |
+| `serve.py` | Local server (no caching, so changes show up on reload). It runs the engine for the two buttons and saves frames for film renders. |
+| `engine/road.js` | The car export: stitches the edition into one chaptered MP3 with ffmpeg. |
 | `assets/brand/` | Official Ancher symbol and lockup (used as-is, never redrawn). |
 
 ### Performance
@@ -127,7 +138,7 @@ The glass dome's real transmission was drawing the whole scene twice per frame. 
 
 The resolution also adapts: if the frame rate falls under 50 (a busy machine), it steps down, and it steps back up once things are smooth. Add `?fps` to the address to see the live frame rate.
 
-**Film mode:** `?mode=film` restores the full-quality settings for rendering videos frame by frame. In that mode `window.__film(t, name)` and `window.__show2(t, name)` pose the radio for time `t` and save a frame through `serve.py`, and `ffmpeg` joins the frames with the audio. See `WORKFLOW.md`.
+**Film mode:** `?mode=film` restores the full-quality settings for rendering videos frame by frame. In that mode `window.__film(t, name)` and `window.__show2(t, name)` pose the radio for time `t` and save a frame through `serve.py`, and `ffmpeg` joins the frames with the audio.
 
 ## What's in this repo, and what isn't
 
@@ -136,8 +147,8 @@ The resolution also adapts: if the frame rate falls under 50 (a busy machine), i
 | all code, the engine, the tests | `edition/`: the edition built from your own library |
 | `demo-edition/`: three demo stations with audio | `engine/fixtures/`: Ancher responses recorded from your library |
 | `engine/demo/`: the recorded responses behind the demo; source texts trimmed to the quoted passages | `.env`: your key and local paths |
+| | `exports/`: your road MP3s |
 | `radio.config.json` | `audio/sfx*/`: licensed sound effects (the radio falls back to generated static without them) |
 
 `npm run edition:demo` rebuilds the demo edition from `engine/demo/`.
 
-`WORKFLOW.md` is the full build log: the decisions, the dead ends and the lessons learned.
